@@ -6,15 +6,15 @@
 <title>Market Fresh ULINE</title>
 <style>
 body{margin:0;padding:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#0047AB 0%,#003380 100%);min-height:100vh;padding:20px}
-.ribbon{position:absolute;top:35px;right:-50px;background:#FFD700;color:#000;padding:15px 70px;transform:rotate(45deg);box-shadow:0 5px 15px rgba(0,0,0,0.4);z-index:100;font-weight:bold;font-size:0.85em;text-align:center;letter-spacing:0.3px;line-height:1.4}
+.ribbon{position:absolute;top:40px;right:-50px;background:#FFD700;color:#000;padding:15px 70px;transform:rotate(45deg);box-shadow:0 5px 15px rgba(0,0,0,0.4);z-index:100;font-weight:bold;font-size:0.85em;text-align:center;letter-spacing:0.3px;line-height:1.4}
 .ribbon-line1{display:block;font-size:0.9em;font-weight:600}
 .ribbon-line2{display:block;font-size:1.1em;font-weight:800}
 .ribbon::before,.ribbon::after{content:'';position:absolute;top:0;width:0;height:0;border-style:solid}
 .ribbon::before{left:-12px;border-width:0 0 12px 12px;border-color:transparent transparent #DAA520 transparent}
 .ribbon::after{right:-12px;border-width:12px 12px 0 0;border-color:#DAA520 transparent transparent transparent}
 .container{max-width:1000px;margin:0 auto;background:#fff;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,0.3);position:relative;overflow:hidden}
-.header{background:linear-gradient(135deg,#0047AB 0%,#0056D2 100%);color:#fff;padding:50px 30px;text-align:center;border-radius:20px 20px 0 0}
-.header h1{font-size:3em;margin:0 0 15px 0;font-weight:bold;text-shadow:2px 2px 4px rgba(0,0,0,0.2)}
+.header{background:linear-gradient(135deg,#0047AB 0%,#0056D2 100%);color:#fff;padding:60px 30px 50px 30px;text-align:center;border-radius:20px 20px 0 0}
+.header h1{font-size:3em;margin:0 0 15px 0;font-weight:bold;text-shadow:2px 2px 4px rgba(0,0,0,0.2);padding-right:80px}
 .header .subtitle{font-size:1.3em;margin:10px 0;font-weight:500}
 .header .description{font-size:1em;opacity:0.9;margin:10px 0}
 .content{padding:40px 30px}
@@ -37,6 +37,8 @@ body{margin:0;padding:0;font-family:Arial,sans-serif;background:linear-gradient(
 .total-section .amount{font-size:3em;font-weight:bold;margin:10px 0}
 .submit-btn{width:100%;padding:18px;background:#28a745;color:#fff;border:none;border-radius:12px;font-size:1.2em;font-weight:bold;cursor:pointer;margin-top:20px}
 .submit-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(40,167,69,0.4)}
+.submit-btn:disabled{background:#ccc;cursor:not-allowed;transform:none}
+.loading{display:none;text-align:center;padding:20px;color:#0047AB;font-weight:bold}
 .modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;justify-content:center;align-items:center}
 .modal-content{background:#fff;padding:40px;border-radius:20px;text-align:center;max-width:500px;margin:20px;box-shadow:0 10px 40px rgba(0,0,0,0.3);animation:slideIn 0.3s ease}
 @keyframes slideIn{from{transform:translateY(-50px);opacity:0}to{transform:translateY(0);opacity:1}}
@@ -52,9 +54,10 @@ body{margin:0;padding:0;font-family:Arial,sans-serif;background:linear-gradient(
 .admin-section{display:none;margin-top:40px;padding-top:40px;border-top:3px solid #0047AB}
 .admin-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px}
 .admin-buttons{display:flex;gap:10px;flex-wrap:wrap}
-.export-btn,.clear-btn{padding:12px 24px;color:#fff;border:none;border-radius:8px;font-weight:bold;cursor:pointer}
+.export-btn,.clear-btn,.refresh-btn{padding:12px 24px;color:#fff;border:none;border-radius:8px;font-weight:bold;cursor:pointer}
 .export-btn{background:#28a745}
 .clear-btn{background:#dc3545}
+.refresh-btn{background:#0047AB}
 .orders-table{width:100%;border-collapse:collapse;margin-top:20px;overflow-x:auto;display:block}
 .orders-table table{width:100%;min-width:1000px}
 .orders-table th{background:#0047AB;color:#fff;padding:12px;text-align:left;font-size:0.9em}
@@ -73,6 +76,7 @@ body{margin:0;padding:0;font-family:Arial,sans-serif;background:linear-gradient(
 .summary-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin-bottom:30px}
 .stat-card{background:linear-gradient(135deg,#0047AB 0%,#0056D2 100%);color:#fff;padding:20px;border-radius:12px;text-align:center}
 .stat-card h3{font-size:2em;margin-bottom:5px}
+.cloud-badge{display:inline-block;background:#28a745;color:#fff;padding:5px 15px;border-radius:15px;font-size:0.8em;margin-left:10px}
 @media (max-width:768px){.header h1{font-size:2em}.header .subtitle{font-size:1.1em}.garnish-container{grid-template-columns:1fr}}
 </style>
 </head>
@@ -84,8 +88,8 @@ body{margin:0;padding:0;font-family:Arial,sans-serif;background:linear-gradient(
 </div>
 <div class="header">
 <h1>🍽️ MARKET FRESH ULINE</h1>
-<div class="subtitle">Selecciona tus platillos de la semana</div>
-<div class="description">Cada platillo muestra su precio individual</div>
+<div class="subtitle">Selecciona tus platillos de la semana <span class="cloud-badge">☁️ CLOUD</span></div>
+<div class="description">Todos los pedidos se guardan en la nube automáticamente</div>
 </div>
 <div class="content">
 <form id="orderForm">
@@ -433,7 +437,8 @@ body{margin:0;padding:0;font-family:Arial,sans-serif;background:linear-gradient(
 <p style="font-size:0.9em;opacity:0.9">Suma de todos los platillos seleccionados</p>
 </div>
 
-<button type="submit" class="submit-btn">✅ ENVIAR MI PEDIDO SEMANAL</button>
+<button type="submit" class="submit-btn" id="submitBtn">✅ ENVIAR MI PEDIDO SEMANAL</button>
+<div class="loading" id="loadingMsg">⏳ Enviando pedido a Google Sheets...</div>
 </form>
 
 <div class="admin-toggle">
@@ -442,8 +447,9 @@ body{margin:0;padding:0;font-family:Arial,sans-serif;background:linear-gradient(
 
 <div class="admin-section" id="adminSection">
 <div class="admin-header">
-<h2>📊 Panel de Administración</h2>
+<h2>📊 Panel de Administración <span class="cloud-badge">☁️ SINCRONIZADO</span></h2>
 <div class="admin-buttons">
+<button class="refresh-btn" onclick="loadOrdersFromSheets()">🔄 Actualizar</button>
 <button class="export-btn" onclick="exportToExcel()">📥 Exportar a Excel</button>
 <button class="clear-btn" onclick="clearAllOrders()">🗑️ Limpiar Todo</button>
 </div>
@@ -454,18 +460,16 @@ body{margin:0;padding:0;font-family:Arial,sans-serif;background:linear-gradient(
 </div>
 </div>
 
-<!-- Success Modal -->
 <div id="successModal" class="modal-overlay">
 <div class="modal-content">
 <div class="checkmark">✅</div>
 <h2>¡Pedido Enviado!</h2>
-<p>Tu pedido semanal ha sido registrado exitosamente</p>
+<p>Tu pedido ha sido guardado en Google Sheets</p>
 <div class="order-summary" id="orderSummary"></div>
 <button class="modal-btn" onclick="closeSuccessModal()">CERRAR</button>
 </div>
 </div>
 
-<!-- Password Modal -->
 <div id="passwordModal" class="password-modal">
 <div class="password-modal-content">
 <h3>🔐 Acceso Administrador</h3>
@@ -482,6 +486,7 @@ body{margin:0;padding:0;font-family:Arial,sans-serif;background:linear-gradient(
 
 <script>
 var ADMIN_PASSWORD='ULINE2025';
+var GOOGLE_SCRIPT_URL='https://script.google.com/macros/s/AKfycbyhk_durX7DT301eJ5cfgWui65eCEj82nOiKDu_0ariEqVspoZaTiuvwpKQSlTf_W8/exec';
 var days=['lunes','martes','miercoles','jueves','viernes'];
 var dayNames={'lunes':'Lunes','martes':'Martes','miercoles':'Miércoles','jueves':'Jueves','viernes':'Viernes'};
 
@@ -526,38 +531,82 @@ total+=precio;
 document.getElementById('totalAmount').textContent='$'+total.toLocaleString('es-MX');
 }
 
-function getOrders(){
-try{
-var stored=localStorage.getItem('marketFreshOrders');
-return stored?JSON.parse(stored):[];
-}catch(e){
-console.error('Error loading orders:',e);
-return[];
-}
+function sendOrderToSheets(orderData){
+return fetch(GOOGLE_SCRIPT_URL,{
+method:'POST',
+mode:'no-cors',
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify(orderData)
+}).then(function(){
+console.log('✅ Pedido enviado a Google Sheets');
+return true;
+}).catch(function(error){
+console.error('❌ Error:',error);
+return false;
+});
 }
 
-function saveOrders(orders){
-try{
-localStorage.setItem('marketFreshOrders',JSON.stringify(orders));
-return true;
-}catch(e){
-console.error('Error saving orders:',e);
-alert('Error al guardar el pedido. Por favor intenta de nuevo.');
-return false;
+function loadOrdersFromSheets(){
+document.getElementById('loadingMsg').style.display='block';
+return fetch(GOOGLE_SCRIPT_URL+'?t='+(new Date).getTime())
+.then(function(response){return response.json()})
+.then(function(orders){
+console.log('✅ Cargados:',orders.length,'pedidos');
+displayOrders(orders);
+document.getElementById('loadingMsg').style.display='none';
+return orders;
+}).catch(function(error){
+console.error('❌ Error:',error);
+document.getElementById('loadingMsg').style.display='none';
+alert('Error al cargar pedidos de Google Sheets');
+return[];
+});
 }
+
+function displayOrders(orders){
+var tbody=document.getElementById('ordersBody');
+tbody.innerHTML='';
+if(orders.length===0){
+tbody.innerHTML='<tr><td colspan="8" style="text-align:center;padding:40px;color:#6c757d">No hay pedidos registrados aún</td></tr>';
+document.getElementById('summaryStats').innerHTML='<div class="stat-card"><h3>0</h3><p>Empleados</p></div><div class="stat-card"><h3>0</h3><p>Platillos</p></div><div class="stat-card"><h3>$0</h3><p>Ingreso Total</p></div>';
+return;
+}
+var totalPlatillos=0;
+var totalIngresos=0;
+orders.forEach(function(order){
+var row=tbody.insertRow();
+row.insertCell(0).textContent=order.nombre;
+days.forEach(function(day){
+var cell=row.insertCell();
+var dayData=order[day];
+if(dayData.nombre==='ninguno'||!dayData.nombre){
+cell.innerHTML='<em style="color:#999">Sin pedido</em>';
+}else{
+var precio=parseInt(dayData.precio)||0;
+var html='<strong>'+dayData.nombre+'</strong><br><small>$'+precio+'</small>';
+if(dayData.guarnicion1){
+html+='<br><small style="color:#666">'+dayData.guarnicion1+', '+dayData.guarnicion2+'</small>';
+}
+cell.innerHTML=html;
+totalPlatillos++;
+totalIngresos+=precio;
+}
+});
+var orderTotal=parseInt(order.total)||0;
+row.insertCell(6).innerHTML='<strong>$'+orderTotal+'</strong>';
+row.insertCell(7).textContent=order.fecha||'';
+});
+document.getElementById('summaryStats').innerHTML='<div class="stat-card"><h3>'+orders.length+'</h3><p>Empleados</p></div><div class="stat-card"><h3>'+totalPlatillos+'</h3><p>Platillos</p></div><div class="stat-card"><h3>$'+totalIngresos.toLocaleString('es-MX')+'</h3><p>Ingreso Total</p></div>';
 }
 
 function showSuccessModal(orderData){
 var summary='<p><strong>Nombre:</strong> '+orderData.nombre+'</p>';
-summary+='<p><strong>Total a pagar:</strong> $'+orderData.total+'</p>';
-summary+='<hr style="margin:15px 0">';
+summary+='<p><strong>Total:</strong> $'+orderData.total+'</p><hr style="margin:15px 0">';
 days.forEach(function(day){
 var dayData=orderData[day];
 if(dayData.nombre!=='ninguno'){
 summary+='<p><strong>'+dayNames[day]+':</strong> '+dayData.nombre;
-if(dayData.guarnicion1){
-summary+=' ('+dayData.guarnicion1+', '+dayData.guarnicion2+')';
-}
+if(dayData.guarnicion1){summary+=' ('+dayData.guarnicion1+', '+dayData.guarnicion2+')';}
 summary+=' - $'+dayData.precio+'</p>';
 }
 });
@@ -594,54 +643,19 @@ document.getElementById('adminPassword').focus();
 function showAdminPanel(){
 var adminSection=document.getElementById('adminSection');
 adminSection.style.display='block';
-loadOrders();
+loadOrdersFromSheets();
 adminSection.scrollIntoView({behavior:'smooth'});
 }
 
-function loadOrders(){
-var orders=getOrders();
-var tbody=document.getElementById('ordersBody');
-tbody.innerHTML='';
-if(orders.length===0){
-tbody.innerHTML='<tr><td colspan="8" style="text-align:center;padding:40px;color:#6c757d">No hay pedidos registrados aún</td></tr>';
-document.getElementById('summaryStats').innerHTML='<div class="stat-card"><h3>0</h3><p>Empleados</p></div><div class="stat-card"><h3>0</h3><p>Platillos</p></div><div class="stat-card"><h3>$0</h3><p>Ingreso Total</p></div>';
-return;
-}
-var totalPlatillos=0;
-var totalIngresos=0;
-orders.forEach(function(order){
-var row=tbody.insertRow();
-row.insertCell(0).textContent=order.nombre;
-days.forEach(function(day){
-var cell=row.insertCell();
-var dayData=order[day];
-if(dayData.nombre==='ninguno'){
-cell.innerHTML='<em style="color:#999">Sin pedido</em>';
-}else{
-var html='<strong>'+dayData.nombre+'</strong><br><small>$'+dayData.precio+'</small>';
-if(dayData.guarnicion1){
-html+='<br><small style="color:#666">'+dayData.guarnicion1+', '+dayData.guarnicion2+'</small>';
-}
-cell.innerHTML=html;
-totalPlatillos++;
-totalIngresos+=dayData.precio;
-}
-});
-row.insertCell(6).innerHTML='<strong>$'+order.total+'</strong>';
-row.insertCell(7).textContent=order.fecha;
-});
-document.getElementById('summaryStats').innerHTML='<div class="stat-card"><h3>'+orders.length+'</h3><p>Empleados</p></div><div class="stat-card"><h3>'+totalPlatillos+'</h3><p>Platillos</p></div><div class="stat-card"><h3>$'+totalIngresos.toLocaleString('es-MX')+'</h3><p>Ingreso Total</p></div>';
-}
-
 function exportToExcel(){
-var orders=getOrders();
+loadOrdersFromSheets().then(function(orders){
 if(orders.length===0){alert('No hay pedidos para exportar');return;}
 var csv='Nombre,Día,Platillo,Precio,Guarnición 1,Guarnición 2,Fecha\n';
 orders.forEach(function(order){
 days.forEach(function(day){
 var dayData=order[day];
 var dayName=dayNames[day];
-if(dayData.nombre==='ninguno'){
+if(dayData.nombre==='ninguno'||!dayData.nombre){
 csv+='"'+order.nombre+'","'+dayName+'","Sin pedido","0","--","--","'+order.fecha+'"\n';
 }else{
 csv+='"'+order.nombre+'","'+dayName+'","'+dayData.nombre+'","'+dayData.precio+'","'+(dayData.guarnicion1||'--')+'","'+(dayData.guarnicion2||'--')+'","'+order.fecha+'"\n';
@@ -650,70 +664,59 @@ csv+='"'+order.nombre+'","'+dayName+'","'+dayData.nombre+'","'+dayData.precio+'"
 });
 var blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
 var link=document.createElement('a');
-var url=URL.createObjectURL(blob);
-link.setAttribute('href',url);
-link.setAttribute('download','pedidos_market_fresh_'+(new Date).toISOString().split('T')[0]+'.csv');
-link.style.visibility='hidden';
-document.body.appendChild(link);
+link.href=URL.createObjectURL(blob);
+link.download='pedidos_market_fresh_'+(new Date).toISOString().split('T')[0]+'.csv';
 link.click();
-document.body.removeChild(link);
+});
 }
 
 function clearAllOrders(){
-if(confirm('⚠️ ¿Estás seguro de que quieres eliminar TODOS los pedidos? Esta acción no se puede deshacer.')){
-if(confirm('Esta es tu última oportunidad. ¿Realmente quieres borrar todo?')){
-localStorage.removeItem('marketFreshOrders');
-loadOrders();
-alert('✅ Todos los pedidos han sido eliminados');
-}
+if(confirm('⚠️ ¿Eliminar TODOS los pedidos de Google Sheets?')){
+alert('⚠️ Para eliminar pedidos, ve directamente a tu Google Sheet y borra las filas manualmente. Esto es por seguridad.');
 }
 }
 
 document.addEventListener('DOMContentLoaded',function(){
-console.log('✅ Sistema Market Fresh ULINE cargado');
+console.log('✅ Market Fresh ULINE + Google Sheets');
 document.getElementById('orderForm').addEventListener('submit',function(e){
 e.preventDefault();
-console.log('📝 Procesando pedido...');
+var submitBtn=document.getElementById('submitBtn');
+var loadingMsg=document.getElementById('loadingMsg');
 var isValid=true;
 var errorMsg='';
 var nombre=document.getElementById('employeeName').value.trim();
 if(!nombre){
-alert('⚠️ Por favor ingresa tu nombre completo');
+alert('⚠️ Ingresa tu nombre');
 document.getElementById('employeeName').focus();
 return;
 }
 days.forEach(function(day){
 if(!isValid)return;
 var select=document.getElementById('select-'+day);
-var value=select.value;
-if(!value){
+if(!select.value){
 isValid=false;
-errorMsg='Por favor selecciona un platillo para '+dayNames[day].toUpperCase();
+errorMsg='Selecciona un platillo para '+dayNames[day];
 select.focus();
 return;
 }
-var nombrePlato=value.split('|')[0];
+var nombrePlato=select.value.split('|')[0];
 if(nombrePlato.includes('*')){
 var guar1=document.getElementById('guar1-'+day);
 var guar2=document.getElementById('guar2-'+day);
 if(!guar1.value||!guar2.value){
 isValid=false;
-errorMsg='Por favor selecciona las 2 guarniciones para '+dayNames[day].toUpperCase();
-if(!guar1.value)guar1.focus();
-else guar2.focus();
+errorMsg='Selecciona las 2 guarniciones para '+dayNames[day];
+if(!guar1.value)guar1.focus();else guar2.focus();
 return;
 }
 }
 });
-if(!isValid){
-alert('⚠️ '+errorMsg);
-return;
-}
+if(!isValid){alert('⚠️ '+errorMsg);return;}
+submitBtn.disabled=true;
+submitBtn.textContent='⏳ Enviando...';
+loadingMsg.style.display='block';
 var total=0;
-var orderData={
-nombre:nombre,
-fecha:(new Date).toLocaleString('es-MX')
-};
+var orderData={nombre:nombre,fecha:(new Date).toLocaleString('es-MX')};
 days.forEach(function(day){
 var select=document.getElementById('select-'+day);
 var value=select.value.split('|');
@@ -728,13 +731,13 @@ guarnicion2:document.getElementById('guar2-'+day).value||''
 };
 });
 orderData.total=total;
-console.log('💾 Guardando pedido:',orderData);
-var orders=getOrders();
-orders.push(orderData);
-if(saveOrders(orders)){
-console.log('✅ Pedido guardado exitosamente');
+sendOrderToSheets(orderData).then(function(success){
+submitBtn.disabled=false;
+submitBtn.textContent='✅ ENVIAR MI PEDIDO SEMANAL';
+loadingMsg.style.display='none';
+if(success){
 showSuccessModal(orderData);
-this.reset();
+document.getElementById('orderForm').reset();
 days.forEach(function(day){
 document.getElementById('price-'+day).textContent='$0';
 document.getElementById('garnish-'+day).style.display='none';
@@ -744,7 +747,10 @@ document.getElementById('guar2-'+day).disabled=true;
 });
 updateTotal();
 window.scrollTo({top:0,behavior:'smooth'});
+}else{
+alert('⚠️ Error al enviar. Intenta de nuevo.');
 }
+});
 });
 document.getElementById('adminPassword').addEventListener('keypress',function(e){
 if(e.key==='Enter')checkPassword();
