@@ -5,37 +5,60 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Market Fresh ULINE</title>
 <style>
-body{margin:0;padding:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#0047AB 0%,#003380 100%);min-height:100vh}
-.container{max-width:900px;margin:0 auto;background:#fff;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
-.header{background:linear-gradient(135deg,#0047AB 0%,#0056D2 100%);color:#fff;padding:40px 30px;text-align:center;border-radius:20px 20px 0 0}
-.header h1{font-size:2.5em;margin:0 0 10px 0}
-.price-badge{display:inline-block;background:#FFD700;color:#0047AB;padding:10px 25px;border-radius:25px;font-weight:bold;margin-top:15px}
+body{margin:0;padding:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#0047AB 0%,#003380 100%);min-height:100vh;padding:20px}
+.ribbon{position:absolute;top:35px;right:-50px;background:#FFD700;color:#000;padding:15px 70px;transform:rotate(45deg);box-shadow:0 5px 15px rgba(0,0,0,0.4);z-index:100;font-weight:bold;font-size:0.85em;text-align:center;letter-spacing:0.3px;line-height:1.4}
+.ribbon-line1{display:block;font-size:0.9em;font-weight:600}
+.ribbon-line2{display:block;font-size:1.1em;font-weight:800}
+.ribbon::before,.ribbon::after{content:'';position:absolute;top:0;width:0;height:0;border-style:solid}
+.ribbon::before{left:-12px;border-width:0 0 12px 12px;border-color:transparent transparent #DAA520 transparent}
+.ribbon::after{right:-12px;border-width:12px 12px 0 0;border-color:#DAA520 transparent transparent transparent}
+.container{max-width:1000px;margin:0 auto;background:#fff;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,0.3);position:relative;overflow:hidden}
+.header{background:linear-gradient(135deg,#0047AB 0%,#0056D2 100%);color:#fff;padding:50px 30px;text-align:center;border-radius:20px 20px 0 0}
+.header h1{font-size:3em;margin:0 0 15px 0;font-weight:bold;text-shadow:2px 2px 4px rgba(0,0,0,0.2)}
+.header .subtitle{font-size:1.3em;margin:10px 0;font-weight:500}
+.header .description{font-size:1em;opacity:0.9;margin:10px 0}
 .content{padding:40px 30px}
 .form-section{margin-bottom:35px}
 .form-section h2{color:#0047AB;margin-bottom:20px;border-bottom:3px solid #0047AB;padding-bottom:10px}
 .input-group{margin-bottom:20px}
 .input-group label{display:block;color:#333;font-weight:600;margin-bottom:8px}
-.input-group input,.selection-group select{width:100%;padding:12px;border:2px solid #ddd;border-radius:8px;font-size:1em}
+.input-group input{width:100%;padding:12px;border:2px solid #ddd;border-radius:8px;font-size:1em}
 .day-section{background:#f8f9fa;padding:25px;border-radius:12px;margin-bottom:20px;border-left:5px solid #0047AB}
-.day-section h3{color:#0047AB;margin-bottom:20px}
-.selection-group{margin-bottom:20px}
-.selection-group label{display:block;color:#555;font-weight:600;margin-bottom:10px}
-.garnish-container{display:grid;grid-template-columns:1fr 1fr;gap:15px}
-.submit-btn{width:100%;padding:18px;background:linear-gradient(135deg,#0047AB 0%,#0056D2 100%);color:#fff;border:none;border-radius:12px;font-size:1.2em;font-weight:bold;cursor:pointer;margin-top:30px}
-.submit-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,71,171,0.4)}
-.success-message{display:none;background:#28a745;color:#fff;padding:20px;border-radius:12px;text-align:center;margin-top:20px}
+.day-section h3{color:#0047AB;margin-bottom:15px;display:flex;justify-content:space-between;align-items:center}
+.day-price{background:#FFD700;color:#0047AB;padding:5px 15px;border-radius:15px;font-size:0.9em;font-weight:bold}
+.selection-group{margin-bottom:15px}
+.selection-group label{display:block;color:#555;font-weight:600;margin-bottom:8px;font-size:0.95em}
+.selection-group select{width:100%;padding:10px;border:2px solid #ddd;border-radius:8px;font-size:0.95em;background:#fff}
+.selection-group select:disabled{background:#f0f0f0;color:#999;cursor:not-allowed}
+.garnish-container{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.garnish-note{font-size:0.85em;color:#666;font-style:italic;margin-top:5px}
+.total-section{background:linear-gradient(135deg,#0047AB 0%,#0056D2 100%);color:#fff;padding:25px;border-radius:12px;margin:30px 0;text-align:center}
+.total-section h2{margin:0 0 10px 0;font-size:2em}
+.total-section .amount{font-size:3em;font-weight:bold;margin:10px 0}
+.submit-btn{width:100%;padding:18px;background:#28a745;color:#fff;border:none;border-radius:12px;font-size:1.2em;font-weight:bold;cursor:pointer;margin-top:20px}
+.submit-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(40,167,69,0.4)}
+.modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;justify-content:center;align-items:center}
+.modal-content{background:#fff;padding:40px;border-radius:20px;text-align:center;max-width:500px;margin:20px;box-shadow:0 10px 40px rgba(0,0,0,0.3);animation:slideIn 0.3s ease}
+@keyframes slideIn{from{transform:translateY(-50px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-content h2{color:#28a745;font-size:2.5em;margin:0 0 20px 0}
+.modal-content .checkmark{font-size:4em;color:#28a745;margin-bottom:20px}
+.modal-content p{font-size:1.2em;color:#333;margin:15px 0}
+.modal-content .order-summary{background:#f8f9fa;padding:20px;border-radius:10px;margin:20px 0;text-align:left}
+.modal-content .order-summary strong{color:#0047AB}
+.modal-btn{background:#0047AB;color:#fff;border:none;padding:15px 40px;border-radius:10px;font-size:1.1em;font-weight:bold;cursor:pointer;margin-top:20px}
+.modal-btn:hover{background:#003380}
 .admin-toggle{text-align:center;margin-top:30px;padding:15px;background:#f8f9fa;border-radius:8px}
 .admin-toggle button{padding:10px 20px;background:#6c757d;color:#fff;border:none;border-radius:6px;cursor:pointer}
 .admin-section{display:none;margin-top:40px;padding-top:40px;border-top:3px solid #0047AB}
 .admin-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px}
-.admin-buttons{display:flex;gap:10px}
+.admin-buttons{display:flex;gap:10px;flex-wrap:wrap}
 .export-btn,.clear-btn{padding:12px 24px;color:#fff;border:none;border-radius:8px;font-weight:bold;cursor:pointer}
 .export-btn{background:#28a745}
 .clear-btn{background:#dc3545}
 .orders-table{width:100%;border-collapse:collapse;margin-top:20px;overflow-x:auto;display:block}
-.orders-table table{width:100%;min-width:800px}
-.orders-table th{background:#0047AB;color:#fff;padding:15px;text-align:left}
-.orders-table td{padding:12px 15px;border-bottom:1px solid #ddd}
+.orders-table table{width:100%;min-width:1000px}
+.orders-table th{background:#0047AB;color:#fff;padding:12px;text-align:left;font-size:0.9em}
+.orders-table td{padding:10px;border-bottom:1px solid #ddd;font-size:0.85em}
 .orders-table tr:hover{background:#f8f9fa}
 .password-modal{display:none;position:fixed;z-index:1000;left:0;top:0;width:100%;height:100%;background-color:rgba(0,0,0,0.5)}
 .password-modal-content{background-color:#fff;margin:15% auto;padding:30px;border-radius:12px;width:90%;max-width:400px}
@@ -50,15 +73,19 @@ body{margin:0;padding:0;font-family:Arial,sans-serif;background:linear-gradient(
 .summary-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin-bottom:30px}
 .stat-card{background:linear-gradient(135deg,#0047AB 0%,#0056D2 100%);color:#fff;padding:20px;border-radius:12px;text-align:center}
 .stat-card h3{font-size:2em;margin-bottom:5px}
-@media (max-width:768px){.header h1{font-size:1.8em}.garnish-container{grid-template-columns:1fr}}
+@media (max-width:768px){.header h1{font-size:2em}.header .subtitle{font-size:1.1em}.garnish-container{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="container">
+<div class="ribbon">
+<span class="ribbon-line1">⏰ ORDENA ANTES DEL</span>
+<span class="ribbon-line2">JUEVES 4PM</span>
+</div>
 <div class="header">
-<h1>🍽️ BIENVENIDO A MARKET FRESH ULINE</h1>
-<p>Selecciona tus platillos de la semana</p>
-<div class="price-badge">$130 MXN por menú</div>
+<h1>🍽️ MARKET FRESH ULINE</h1>
+<div class="subtitle">Selecciona tus platillos de la semana</div>
+<div class="description">Cada platillo muestra su precio individual</div>
 </div>
 <div class="content">
 <form id="orderForm">
@@ -66,258 +93,353 @@ body{margin:0;padding:0;font-family:Arial,sans-serif;background:linear-gradient(
 <h2>📋 Información del Empleado</h2>
 <div class="input-group">
 <label for="employeeName">Nombre Completo *</label>
-<input type="text" id="employeeName" name="employeeName" required placeholder="Ingresa tu nombre completo">
+<input type="text" id="employeeName" required placeholder="Ingresa tu nombre completo">
 </div>
 </div>
+
 <div class="form-section">
 <h2>🍴 Selecciona tus Menús de la Semana</h2>
+
+<!-- LUNES -->
 <div class="day-section">
-<h3>🗓️ LUNES</h3>
+<h3>🗓️ LUNES <span class="day-price" id="price-lunes">$0</span></h3>
 <div class="selection-group">
-<label>Plato Fuerte:</label>
-<select name="lunes-plato" required>
-<option value="">Selecciona un plato...</option>
-<option value="Ninguno">❌ Ninguno (no quiero este día)</option>
-<option value="Milanesa de Pollo empanizada">Milanesa de Pollo empanizada</option>
-<option value="Milanesa de Pollo al grill">Milanesa de Pollo al grill</option>
-<option value="Asado de puerco">Asado de puerco</option>
-<option value="Picadillo">Picadillo</option>
-<option value="Mole con pechuga">Mole con pechuga</option>
-<option value="Chile Relleno de carne o queso">Chile Relleno de carne o queso</option>
-<option value="Panela en salsa a la mexicana">Panela en salsa a la mexicana</option>
-<option value="Cortadillo de puerco en salsa verde">Cortadillo de puerco en salsa verde</option>
-<option value="Cortadillo de res con papa">Cortadillo de res con papa</option>
-<option value="Discada tradicional">Discada tradicional</option>
-<option value="Albondigas al chipotle">Albondigas al chipotle</option>
-<option value="Pechuga de pollo al chipotle">Pechuga de pollo al chipotle</option>
-<option value="Pechuga de pollo poblano">Pechuga de pollo poblano</option>
+<label>Platillo:</label>
+<select name="lunes-platillo" id="select-lunes" required onchange="updateDayPrice('lunes')">
+<option value="">Selecciona un platillo...</option>
+<option value="ninguno|0">❌ Ninguno (no quiero este día) - $0</option>
+<optgroup label="─── PLATILLOS COMPLETOS ───"></optgroup>
+<option value="Ensalada Ranch con Pollo|91">Ensalada Ranch con Pollo - $91</option>
+<option value="Ensalada César con Pollo|84">Ensalada César con Pollo - $84</option>
+<option value="Ensalada de Pollo con Coditos|91">Ensalada de Pollo con Coditos - $91</option>
+<option value="Hamburguesa de Res con Papas|98">Hamburguesa de Res con Papas - $98</option>
+<option value="Lasagna Bolognesa|112">Lasagna Bolognesa - $112</option>
+<option value="Chapata de Pollo Premium|98">Chapata de Pollo Premium - $98</option>
+<option value="Chapata de Pollo o Jamón|98">Chapata de Pollo o Jamón - $98</option>
+<option value="Milanesa de Res Mexicana|98">Milanesa de Res Mexicana - $98</option>
+<option value="🌱 Lasagna de Espinacas|112">🌱 Lasagna de Espinacas - $112</option>
+<option value="🌱 Hamburguesa Portobello|98">🌱 Hamburguesa Portobello - $98</option>
+<option value="🌱 Ensalada de Pasta Fría|84">🌱 Ensalada de Pasta Fría - $84</option>
+<optgroup label="─── PLATILLOS CON GUARNICIÓN ───"></optgroup>
+<option value="Milanesa de Pollo Empanizada*|91">Milanesa de Pollo Empanizada* - $91</option>
+<option value="Milanesa de Pollo al Grill*|91">Milanesa de Pollo al Grill* - $91</option>
+<option value="Asado de Puerco*|91">Asado de Puerco* - $91</option>
+<option value="Picadillo*|91">Picadillo* - $91</option>
+<option value="Mole con Pechuga*|91">Mole con Pechuga* - $91</option>
+<option value="Chile Relleno*|91">Chile Relleno* - $91</option>
+<option value="Panela a la Mexicana*|91">Panela a la Mexicana* - $91</option>
+<option value="Cortadillo de Puerco*|91">Cortadillo de Puerco* - $91</option>
+<option value="Cortadillo de Res*|91">Cortadillo de Res* - $91</option>
+<option value="Discada Tradicional*|91">Discada Tradicional* - $91</option>
+<option value="Albóndigas al Chipotle*|91">Albóndigas al Chipotle* - $91</option>
+<option value="Pechuga al Chipotle*|91">Pechuga al Chipotle* - $91</option>
+<option value="Pechuga Poblano*|91">Pechuga Poblano* - $91</option>
 </select>
+<div class="garnish-note" id="note-lunes"></div>
 </div>
+<div class="garnish-container" id="garnish-lunes" style="display:none">
 <div class="selection-group">
-<label>Guarniciones (Selecciona 2):</label>
-<div class="garnish-container">
-<select name="lunes-guarnicion1" required>
-<option value="">Guarnición 1...</option>
-<option value="Ninguno">❌ Ninguno</option>
+<label>Guarnición 1:</label>
+<select name="lunes-guarnicion1" id="guar1-lunes">
+<option value="">Selecciona...</option>
 <option value="Espagueti">Espagueti</option>
-<option value="Pure">Puré</option>
+<option value="Puré">Puré</option>
 <option value="Arroz">Arroz</option>
 <option value="Frijoles">Frijoles</option>
-<option value="Papitas limón">Papitas limón</option>
-<option value="Papas fritas">Papas fritas</option>
+<option value="Papitas Limón">Papitas Limón</option>
+<option value="Papas Fritas">Papas Fritas</option>
 </select>
-<select name="lunes-guarnicion2" required>
-<option value="">Guarnición 2...</option>
-<option value="Ninguno">❌ Ninguno</option>
+</div>
+<div class="selection-group">
+<label>Guarnición 2:</label>
+<select name="lunes-guarnicion2" id="guar2-lunes">
+<option value="">Selecciona...</option>
 <option value="Espagueti">Espagueti</option>
-<option value="Pure">Puré</option>
+<option value="Puré">Puré</option>
 <option value="Arroz">Arroz</option>
 <option value="Frijoles">Frijoles</option>
-<option value="Papitas limón">Papitas limón</option>
-<option value="Papas fritas">Papas fritas</option>
+<option value="Papitas Limón">Papitas Limón</option>
+<option value="Papas Fritas">Papas Fritas</option>
 </select>
 </div>
 </div>
 </div>
+
+<!-- MARTES -->
 <div class="day-section">
-<h3>🗓️ MARTES</h3>
+<h3>🗓️ MARTES <span class="day-price" id="price-martes">$0</span></h3>
 <div class="selection-group">
-<label>Plato Fuerte:</label>
-<select name="martes-plato" required>
-<option value="">Selecciona un plato...</option>
-<option value="Ninguno">❌ Ninguno (no quiero este día)</option>
-<option value="Milanesa de Pollo empanizada">Milanesa de Pollo empanizada</option>
-<option value="Milanesa de Pollo al grill">Milanesa de Pollo al grill</option>
-<option value="Asado de puerco">Asado de puerco</option>
-<option value="Picadillo">Picadillo</option>
-<option value="Mole con pechuga">Mole con pechuga</option>
-<option value="Chile Relleno de carne o queso">Chile Relleno de carne o queso</option>
-<option value="Panela en salsa a la mexicana">Panela en salsa a la mexicana</option>
-<option value="Cortadillo de puerco en salsa verde">Cortadillo de puerco en salsa verde</option>
-<option value="Cortadillo de res con papa">Cortadillo de res con papa</option>
-<option value="Discada tradicional">Discada tradicional</option>
-<option value="Albondigas al chipotle">Albondigas al chipotle</option>
-<option value="Pechuga de pollo al chipotle">Pechuga de pollo al chipotle</option>
-<option value="Pechuga de pollo poblano">Pechuga de pollo poblano</option>
+<label>Platillo:</label>
+<select name="martes-platillo" id="select-martes" required onchange="updateDayPrice('martes')">
+<option value="">Selecciona un platillo...</option>
+<option value="ninguno|0">❌ Ninguno (no quiero este día) - $0</option>
+<optgroup label="─── PLATILLOS COMPLETOS ───"></optgroup>
+<option value="Ensalada Ranch con Pollo|91">Ensalada Ranch con Pollo - $91</option>
+<option value="Ensalada César con Pollo|84">Ensalada César con Pollo - $84</option>
+<option value="Ensalada de Pollo con Coditos|91">Ensalada de Pollo con Coditos - $91</option>
+<option value="Hamburguesa de Res con Papas|98">Hamburguesa de Res con Papas - $98</option>
+<option value="Lasagna Bolognesa|112">Lasagna Bolognesa - $112</option>
+<option value="Chapata de Pollo Premium|98">Chapata de Pollo Premium - $98</option>
+<option value="Chapata de Pollo o Jamón|98">Chapata de Pollo o Jamón - $98</option>
+<option value="Milanesa de Res Mexicana|98">Milanesa de Res Mexicana - $98</option>
+<option value="🌱 Lasagna de Espinacas|112">🌱 Lasagna de Espinacas - $112</option>
+<option value="🌱 Hamburguesa Portobello|98">🌱 Hamburguesa Portobello - $98</option>
+<option value="🌱 Ensalada de Pasta Fría|84">🌱 Ensalada de Pasta Fría - $84</option>
+<optgroup label="─── PLATILLOS CON GUARNICIÓN ───"></optgroup>
+<option value="Milanesa de Pollo Empanizada*|91">Milanesa de Pollo Empanizada* - $91</option>
+<option value="Milanesa de Pollo al Grill*|91">Milanesa de Pollo al Grill* - $91</option>
+<option value="Asado de Puerco*|91">Asado de Puerco* - $91</option>
+<option value="Picadillo*|91">Picadillo* - $91</option>
+<option value="Mole con Pechuga*|91">Mole con Pechuga* - $91</option>
+<option value="Chile Relleno*|91">Chile Relleno* - $91</option>
+<option value="Panela a la Mexicana*|91">Panela a la Mexicana* - $91</option>
+<option value="Cortadillo de Puerco*|91">Cortadillo de Puerco* - $91</option>
+<option value="Cortadillo de Res*|91">Cortadillo de Res* - $91</option>
+<option value="Discada Tradicional*|91">Discada Tradicional* - $91</option>
+<option value="Albóndigas al Chipotle*|91">Albóndigas al Chipotle* - $91</option>
+<option value="Pechuga al Chipotle*|91">Pechuga al Chipotle* - $91</option>
+<option value="Pechuga Poblano*|91">Pechuga Poblano* - $91</option>
 </select>
+<div class="garnish-note" id="note-martes"></div>
 </div>
+<div class="garnish-container" id="garnish-martes" style="display:none">
 <div class="selection-group">
-<label>Guarniciones (Selecciona 2):</label>
-<div class="garnish-container">
-<select name="martes-guarnicion1" required>
-<option value="">Guarnición 1...</option>
-<option value="Ninguno">❌ Ninguno</option>
+<label>Guarnición 1:</label>
+<select name="martes-guarnicion1" id="guar1-martes">
+<option value="">Selecciona...</option>
 <option value="Espagueti">Espagueti</option>
-<option value="Pure">Puré</option>
+<option value="Puré">Puré</option>
 <option value="Arroz">Arroz</option>
 <option value="Frijoles">Frijoles</option>
-<option value="Papitas limón">Papitas limón</option>
-<option value="Papas fritas">Papas fritas</option>
+<option value="Papitas Limón">Papitas Limón</option>
+<option value="Papas Fritas">Papas Fritas</option>
 </select>
-<select name="martes-guarnicion2" required>
-<option value="">Guarnición 2...</option>
-<option value="Ninguno">❌ Ninguno</option>
+</div>
+<div class="selection-group">
+<label>Guarnición 2:</label>
+<select name="martes-guarnicion2" id="guar2-martes">
+<option value="">Selecciona...</option>
 <option value="Espagueti">Espagueti</option>
-<option value="Pure">Puré</option>
+<option value="Puré">Puré</option>
 <option value="Arroz">Arroz</option>
 <option value="Frijoles">Frijoles</option>
-<option value="Papitas limón">Papitas limón</option>
-<option value="Papas fritas">Papas fritas</option>
+<option value="Papitas Limón">Papitas Limón</option>
+<option value="Papas Fritas">Papas Fritas</option>
 </select>
 </div>
 </div>
 </div>
+
+<!-- MIÉRCOLES -->
 <div class="day-section">
-<h3>🗓️ MIÉRCOLES</h3>
+<h3>🗓️ MIÉRCOLES <span class="day-price" id="price-miercoles">$0</span></h3>
 <div class="selection-group">
-<label>Plato Fuerte:</label>
-<select name="miercoles-plato" required>
-<option value="">Selecciona un plato...</option>
-<option value="Ninguno">❌ Ninguno (no quiero este día)</option>
-<option value="Milanesa de Pollo empanizada">Milanesa de Pollo empanizada</option>
-<option value="Milanesa de Pollo al grill">Milanesa de Pollo al grill</option>
-<option value="Asado de puerco">Asado de puerco</option>
-<option value="Picadillo">Picadillo</option>
-<option value="Mole con pechuga">Mole con pechuga</option>
-<option value="Chile Relleno de carne o queso">Chile Relleno de carne o queso</option>
-<option value="Panela en salsa a la mexicana">Panela en salsa a la mexicana</option>
-<option value="Cortadillo de puerco en salsa verde">Cortadillo de puerco en salsa verde</option>
-<option value="Cortadillo de res con papa">Cortadillo de res con papa</option>
-<option value="Discada tradicional">Discada tradicional</option>
-<option value="Albondigas al chipotle">Albondigas al chipotle</option>
-<option value="Pechuga de pollo al chipotle">Pechuga de pollo al chipotle</option>
-<option value="Pechuga de pollo poblano">Pechuga de pollo poblano</option>
+<label>Platillo:</label>
+<select name="miercoles-platillo" id="select-miercoles" required onchange="updateDayPrice('miercoles')">
+<option value="">Selecciona un platillo...</option>
+<option value="ninguno|0">❌ Ninguno (no quiero este día) - $0</option>
+<optgroup label="─── PLATILLOS COMPLETOS ───"></optgroup>
+<option value="Ensalada Ranch con Pollo|91">Ensalada Ranch con Pollo - $91</option>
+<option value="Ensalada César con Pollo|84">Ensalada César con Pollo - $84</option>
+<option value="Ensalada de Pollo con Coditos|91">Ensalada de Pollo con Coditos - $91</option>
+<option value="Hamburguesa de Res con Papas|98">Hamburguesa de Res con Papas - $98</option>
+<option value="Lasagna Bolognesa|112">Lasagna Bolognesa - $112</option>
+<option value="Chapata de Pollo Premium|98">Chapata de Pollo Premium - $98</option>
+<option value="Chapata de Pollo o Jamón|98">Chapata de Pollo o Jamón - $98</option>
+<option value="Milanesa de Res Mexicana|98">Milanesa de Res Mexicana - $98</option>
+<option value="🌱 Lasagna de Espinacas|112">🌱 Lasagna de Espinacas - $112</option>
+<option value="🌱 Hamburguesa Portobello|98">🌱 Hamburguesa Portobello - $98</option>
+<option value="🌱 Ensalada de Pasta Fría|84">🌱 Ensalada de Pasta Fría - $84</option>
+<optgroup label="─── PLATILLOS CON GUARNICIÓN ───"></optgroup>
+<option value="Milanesa de Pollo Empanizada*|91">Milanesa de Pollo Empanizada* - $91</option>
+<option value="Milanesa de Pollo al Grill*|91">Milanesa de Pollo al Grill* - $91</option>
+<option value="Asado de Puerco*|91">Asado de Puerco* - $91</option>
+<option value="Picadillo*|91">Picadillo* - $91</option>
+<option value="Mole con Pechuga*|91">Mole con Pechuga* - $91</option>
+<option value="Chile Relleno*|91">Chile Relleno* - $91</option>
+<option value="Panela a la Mexicana*|91">Panela a la Mexicana* - $91</option>
+<option value="Cortadillo de Puerco*|91">Cortadillo de Puerco* - $91</option>
+<option value="Cortadillo de Res*|91">Cortadillo de Res* - $91</option>
+<option value="Discada Tradicional*|91">Discada Tradicional* - $91</option>
+<option value="Albóndigas al Chipotle*|91">Albóndigas al Chipotle* - $91</option>
+<option value="Pechuga al Chipotle*|91">Pechuga al Chipotle* - $91</option>
+<option value="Pechuga Poblano*|91">Pechuga Poblano* - $91</option>
 </select>
+<div class="garnish-note" id="note-miercoles"></div>
 </div>
+<div class="garnish-container" id="garnish-miercoles" style="display:none">
 <div class="selection-group">
-<label>Guarniciones (Selecciona 2):</label>
-<div class="garnish-container">
-<select name="miercoles-guarnicion1" required>
-<option value="">Guarnición 1...</option>
-<option value="Ninguno">❌ Ninguno</option>
+<label>Guarnición 1:</label>
+<select name="miercoles-guarnicion1" id="guar1-miercoles">
+<option value="">Selecciona...</option>
 <option value="Espagueti">Espagueti</option>
-<option value="Pure">Puré</option>
+<option value="Puré">Puré</option>
 <option value="Arroz">Arroz</option>
 <option value="Frijoles">Frijoles</option>
-<option value="Papitas limón">Papitas limón</option>
-<option value="Papas fritas">Papas fritas</option>
+<option value="Papitas Limón">Papitas Limón</option>
+<option value="Papas Fritas">Papas Fritas</option>
 </select>
-<select name="miercoles-guarnicion2" required>
-<option value="">Guarnición 2...</option>
-<option value="Ninguno">❌ Ninguno</option>
+</div>
+<div class="selection-group">
+<label>Guarnición 2:</label>
+<select name="miercoles-guarnicion2" id="guar2-miercoles">
+<option value="">Selecciona...</option>
 <option value="Espagueti">Espagueti</option>
-<option value="Pure">Puré</option>
+<option value="Puré">Puré</option>
 <option value="Arroz">Arroz</option>
 <option value="Frijoles">Frijoles</option>
-<option value="Papitas limón">Papitas limón</option>
-<option value="Papas fritas">Papas fritas</option>
+<option value="Papitas Limón">Papitas Limón</option>
+<option value="Papas Fritas">Papas Fritas</option>
 </select>
 </div>
 </div>
 </div>
+
+<!-- JUEVES -->
 <div class="day-section">
-<h3>🗓️ JUEVES</h3>
+<h3>🗓️ JUEVES <span class="day-price" id="price-jueves">$0</span></h3>
 <div class="selection-group">
-<label>Plato Fuerte:</label>
-<select name="jueves-plato" required>
-<option value="">Selecciona un plato...</option>
-<option value="Ninguno">❌ Ninguno (no quiero este día)</option>
-<option value="Milanesa de Pollo empanizada">Milanesa de Pollo empanizada</option>
-<option value="Milanesa de Pollo al grill">Milanesa de Pollo al grill</option>
-<option value="Asado de puerco">Asado de puerco</option>
-<option value="Picadillo">Picadillo</option>
-<option value="Mole con pechuga">Mole con pechuga</option>
-<option value="Chile Relleno de carne o queso">Chile Relleno de carne o queso</option>
-<option value="Panela en salsa a la mexicana">Panela en salsa a la mexicana</option>
-<option value="Cortadillo de puerco en salsa verde">Cortadillo de puerco en salsa verde</option>
-<option value="Cortadillo de res con papa">Cortadillo de res con papa</option>
-<option value="Discada tradicional">Discada tradicional</option>
-<option value="Albondigas al chipotle">Albondigas al chipotle</option>
-<option value="Pechuga de pollo al chipotle">Pechuga de pollo al chipotle</option>
-<option value="Pechuga de pollo poblano">Pechuga de pollo poblano</option>
+<label>Platillo:</label>
+<select name="jueves-platillo" id="select-jueves" required onchange="updateDayPrice('jueves')">
+<option value="">Selecciona un platillo...</option>
+<option value="ninguno|0">❌ Ninguno (no quiero este día) - $0</option>
+<optgroup label="─── PLATILLOS COMPLETOS ───"></optgroup>
+<option value="Ensalada Ranch con Pollo|91">Ensalada Ranch con Pollo - $91</option>
+<option value="Ensalada César con Pollo|84">Ensalada César con Pollo - $84</option>
+<option value="Ensalada de Pollo con Coditos|91">Ensalada de Pollo con Coditos - $91</option>
+<option value="Hamburguesa de Res con Papas|98">Hamburguesa de Res con Papas - $98</option>
+<option value="Lasagna Bolognesa|112">Lasagna Bolognesa - $112</option>
+<option value="Chapata de Pollo Premium|98">Chapata de Pollo Premium - $98</option>
+<option value="Chapata de Pollo o Jamón|98">Chapata de Pollo o Jamón - $98</option>
+<option value="Milanesa de Res Mexicana|98">Milanesa de Res Mexicana - $98</option>
+<option value="🌱 Lasagna de Espinacas|112">🌱 Lasagna de Espinacas - $112</option>
+<option value="🌱 Hamburguesa Portobello|98">🌱 Hamburguesa Portobello - $98</option>
+<option value="🌱 Ensalada de Pasta Fría|84">🌱 Ensalada de Pasta Fría - $84</option>
+<optgroup label="─── PLATILLOS CON GUARNICIÓN ───"></optgroup>
+<option value="Milanesa de Pollo Empanizada*|91">Milanesa de Pollo Empanizada* - $91</option>
+<option value="Milanesa de Pollo al Grill*|91">Milanesa de Pollo al Grill* - $91</option>
+<option value="Asado de Puerco*|91">Asado de Puerco* - $91</option>
+<option value="Picadillo*|91">Picadillo* - $91</option>
+<option value="Mole con Pechuga*|91">Mole con Pechuga* - $91</option>
+<option value="Chile Relleno*|91">Chile Relleno* - $91</option>
+<option value="Panela a la Mexicana*|91">Panela a la Mexicana* - $91</option>
+<option value="Cortadillo de Puerco*|91">Cortadillo de Puerco* - $91</option>
+<option value="Cortadillo de Res*|91">Cortadillo de Res* - $91</option>
+<option value="Discada Tradicional*|91">Discada Tradicional* - $91</option>
+<option value="Albóndigas al Chipotle*|91">Albóndigas al Chipotle* - $91</option>
+<option value="Pechuga al Chipotle*|91">Pechuga al Chipotle* - $91</option>
+<option value="Pechuga Poblano*|91">Pechuga Poblano* - $91</option>
 </select>
+<div class="garnish-note" id="note-jueves"></div>
 </div>
+<div class="garnish-container" id="garnish-jueves" style="display:none">
 <div class="selection-group">
-<label>Guarniciones (Selecciona 2):</label>
-<div class="garnish-container">
-<select name="jueves-guarnicion1" required>
-<option value="">Guarnición 1...</option>
-<option value="Ninguno">❌ Ninguno</option>
+<label>Guarnición 1:</label>
+<select name="jueves-guarnicion1" id="guar1-jueves">
+<option value="">Selecciona...</option>
 <option value="Espagueti">Espagueti</option>
-<option value="Pure">Puré</option>
+<option value="Puré">Puré</option>
 <option value="Arroz">Arroz</option>
 <option value="Frijoles">Frijoles</option>
-<option value="Papitas limón">Papitas limón</option>
-<option value="Papas fritas">Papas fritas</option>
+<option value="Papitas Limón">Papitas Limón</option>
+<option value="Papas Fritas">Papas Fritas</option>
 </select>
-<select name="jueves-guarnicion2" required>
-<option value="">Guarnición 2...</option>
-<option value="Ninguno">❌ Ninguno</option>
+</div>
+<div class="selection-group">
+<label>Guarnición 2:</label>
+<select name="jueves-guarnicion2" id="guar2-jueves">
+<option value="">Selecciona...</option>
 <option value="Espagueti">Espagueti</option>
-<option value="Pure">Puré</option>
+<option value="Puré">Puré</option>
 <option value="Arroz">Arroz</option>
 <option value="Frijoles">Frijoles</option>
-<option value="Papitas limón">Papitas limón</option>
-<option value="Papas fritas">Papas fritas</option>
+<option value="Papitas Limón">Papitas Limón</option>
+<option value="Papas Fritas">Papas Fritas</option>
 </select>
 </div>
 </div>
 </div>
+
+<!-- VIERNES -->
 <div class="day-section">
-<h3>🗓️ VIERNES</h3>
+<h3>🗓️ VIERNES <span class="day-price" id="price-viernes">$0</span></h3>
 <div class="selection-group">
-<label>Plato Fuerte:</label>
-<select name="viernes-plato" required>
-<option value="">Selecciona un plato...</option>
-<option value="Ninguno">❌ Ninguno (no quiero este día)</option>
-<option value="Milanesa de Pollo empanizada">Milanesa de Pollo empanizada</option>
-<option value="Milanesa de Pollo al grill">Milanesa de Pollo al grill</option>
-<option value="Asado de puerco">Asado de puerco</option>
-<option value="Picadillo">Picadillo</option>
-<option value="Mole con pechuga">Mole con pechuga</option>
-<option value="Chile Relleno de carne o queso">Chile Relleno de carne o queso</option>
-<option value="Panela en salsa a la mexicana">Panela en salsa a la mexicana</option>
-<option value="Cortadillo de puerco en salsa verde">Cortadillo de puerco en salsa verde</option>
-<option value="Cortadillo de res con papa">Cortadillo de res con papa</option>
-<option value="Discada tradicional">Discada tradicional</option>
-<option value="Albondigas al chipotle">Albondigas al chipotle</option>
-<option value="Pechuga de pollo al chipotle">Pechuga de pollo al chipotle</option>
-<option value="Pechuga de pollo poblano">Pechuga de pollo poblano</option>
+<label>Platillo:</label>
+<select name="viernes-platillo" id="select-viernes" required onchange="updateDayPrice('viernes')">
+<option value="">Selecciona un platillo...</option>
+<option value="ninguno|0">❌ Ninguno (no quiero este día) - $0</option>
+<optgroup label="─── PLATILLOS COMPLETOS ───"></optgroup>
+<option value="Ensalada Ranch con Pollo|91">Ensalada Ranch con Pollo - $91</option>
+<option value="Ensalada César con Pollo|84">Ensalada César con Pollo - $84</option>
+<option value="Ensalada de Pollo con Coditos|91">Ensalada de Pollo con Coditos - $91</option>
+<option value="Hamburguesa de Res con Papas|98">Hamburguesa de Res con Papas - $98</option>
+<option value="Lasagna Bolognesa|112">Lasagna Bolognesa - $112</option>
+<option value="Chapata de Pollo Premium|98">Chapata de Pollo Premium - $98</option>
+<option value="Chapata de Pollo o Jamón|98">Chapata de Pollo o Jamón - $98</option>
+<option value="Milanesa de Res Mexicana|98">Milanesa de Res Mexicana - $98</option>
+<option value="🌱 Lasagna de Espinacas|112">🌱 Lasagna de Espinacas - $112</option>
+<option value="🌱 Hamburguesa Portobello|98">🌱 Hamburguesa Portobello - $98</option>
+<option value="🌱 Ensalada de Pasta Fría|84">🌱 Ensalada de Pasta Fría - $84</option>
+<optgroup label="─── PLATILLOS CON GUARNICIÓN ───"></optgroup>
+<option value="Milanesa de Pollo Empanizada*|91">Milanesa de Pollo Empanizada* - $91</option>
+<option value="Milanesa de Pollo al Grill*|91">Milanesa de Pollo al Grill* - $91</option>
+<option value="Asado de Puerco*|91">Asado de Puerco* - $91</option>
+<option value="Picadillo*|91">Picadillo* - $91</option>
+<option value="Mole con Pechuga*|91">Mole con Pechuga* - $91</option>
+<option value="Chile Relleno*|91">Chile Relleno* - $91</option>
+<option value="Panela a la Mexicana*|91">Panela a la Mexicana* - $91</option>
+<option value="Cortadillo de Puerco*|91">Cortadillo de Puerco* - $91</option>
+<option value="Cortadillo de Res*|91">Cortadillo de Res* - $91</option>
+<option value="Discada Tradicional*|91">Discada Tradicional* - $91</option>
+<option value="Albóndigas al Chipotle*|91">Albóndigas al Chipotle* - $91</option>
+<option value="Pechuga al Chipotle*|91">Pechuga al Chipotle* - $91</option>
+<option value="Pechuga Poblano*|91">Pechuga Poblano* - $91</option>
 </select>
+<div class="garnish-note" id="note-viernes"></div>
 </div>
+<div class="garnish-container" id="garnish-viernes" style="display:none">
 <div class="selection-group">
-<label>Guarniciones (Selecciona 2):</label>
-<div class="garnish-container">
-<select name="viernes-guarnicion1" required>
-<option value="">Guarnición 1...</option>
-<option value="Ninguno">❌ Ninguno</option>
+<label>Guarnición 1:</label>
+<select name="viernes-guarnicion1" id="guar1-viernes">
+<option value="">Selecciona...</option>
 <option value="Espagueti">Espagueti</option>
-<option value="Pure">Puré</option>
+<option value="Puré">Puré</option>
 <option value="Arroz">Arroz</option>
 <option value="Frijoles">Frijoles</option>
-<option value="Papitas limón">Papitas limón</option>
-<option value="Papas fritas">Papas fritas</option>
+<option value="Papitas Limón">Papitas Limón</option>
+<option value="Papas Fritas">Papas Fritas</option>
 </select>
-<select name="viernes-guarnicion2" required>
-<option value="">Guarnición 2...</option>
-<option value="Ninguno">❌ Ninguno</option>
+</div>
+<div class="selection-group">
+<label>Guarnición 2:</label>
+<select name="viernes-guarnicion2" id="guar2-viernes">
+<option value="">Selecciona...</option>
 <option value="Espagueti">Espagueti</option>
-<option value="Pure">Puré</option>
+<option value="Puré">Puré</option>
 <option value="Arroz">Arroz</option>
 <option value="Frijoles">Frijoles</option>
-<option value="Papitas limón">Papitas limón</option>
-<option value="Papas fritas">Papas fritas</option>
+<option value="Papitas Limón">Papitas Limón</option>
+<option value="Papas Fritas">Papas Fritas</option>
 </select>
 </div>
 </div>
 </div>
+
 </div>
+
+<div class="total-section">
+<h2>💰 TOTAL A PAGAR</h2>
+<div class="amount" id="totalAmount">$0</div>
+<p style="font-size:0.9em;opacity:0.9">Suma de todos los platillos seleccionados</p>
+</div>
+
 <button type="submit" class="submit-btn">✅ ENVIAR MI PEDIDO SEMANAL</button>
-<div class="success-message" id="successMessage">✅ ¡Pedido registrado exitosamente! Gracias por tu orden.</div>
 </form>
+
 <div class="admin-toggle">
 <button onclick="toggleAdmin()">🔐 Acceso Administrador</button>
 </div>
+
 <div class="admin-section" id="adminSection">
 <div class="admin-header">
 <h2>📊 Panel de Administración</h2>
@@ -327,10 +449,23 @@ body{margin:0;padding:0;font-family:Arial,sans-serif;background:linear-gradient(
 </div>
 </div>
 <div class="summary-stats" id="summaryStats"></div>
-<div class="orders-table"><table><thead><tr><th>Nombre</th><th>Lunes</th><th>Martes</th><th>Miércoles</th><th>Jueves</th><th>Viernes</th><th>Fecha</th></tr></thead><tbody id="ordersBody"></tbody></table></div>
+<div class="orders-table"><table><thead><tr><th>Nombre</th><th>Lunes</th><th>Martes</th><th>Miércoles</th><th>Jueves</th><th>Viernes</th><th>Total</th><th>Fecha</th></tr></thead><tbody id="ordersBody"></tbody></table></div>
 </div>
 </div>
 </div>
+
+<!-- Success Modal -->
+<div id="successModal" class="modal-overlay">
+<div class="modal-content">
+<div class="checkmark">✅</div>
+<h2>¡Pedido Enviado!</h2>
+<p>Tu pedido semanal ha sido registrado exitosamente</p>
+<div class="order-summary" id="orderSummary"></div>
+<button class="modal-btn" onclick="closeSuccessModal()">CERRAR</button>
+</div>
+</div>
+
+<!-- Password Modal -->
 <div id="passwordModal" class="password-modal">
 <div class="password-modal-content">
 <h3>🔐 Acceso Administrador</h3>
@@ -344,8 +479,283 @@ body{margin:0;padding:0;font-family:Arial,sans-serif;background:linear-gradient(
 <div class="password-error" id="passwordError">❌ Contraseña incorrecta</div>
 </div>
 </div>
+
 <script>
-var ADMIN_PASSWORD="ULINE2025";function getOrders(){var e=localStorage.getItem("marketFreshOrders");return e?JSON.parse(e):[]}function saveOrders(e){localStorage.setItem("marketFreshOrders",JSON.stringify(e))}function toggleAdmin(){document.getElementById("passwordModal").style.display="block",document.getElementById("adminPassword").value="",document.getElementById("passwordError").style.display="none",setTimeout(function(){document.getElementById("adminPassword").focus()},100)}function closePasswordModal(){document.getElementById("passwordModal").style.display="none"}function checkPassword(){document.getElementById("adminPassword").value===ADMIN_PASSWORD?(closePasswordModal(),showAdminPanel()):(document.getElementById("passwordError").style.display="block",document.getElementById("adminPassword").value="",document.getElementById("adminPassword").focus())}function showAdminPanel(){var e=document.getElementById("adminSection");e.style.display="block",loadOrders(),e.scrollIntoView({behavior:"smooth"})}function loadOrders(){var e=getOrders(),t=document.getElementById("ordersBody");if(t.innerHTML="",0===e.length)return t.innerHTML='<tr><td colspan="7" style="text-align:center;padding:40px;color:#6c757d">No hay pedidos registrados aún</td></tr>',void(document.getElementById("summaryStats").innerHTML='<div class="stat-card"><h3>0</h3><p>Empleados</p></div><div class="stat-card"><h3>0</h3><p>Menús Totales</p></div><div class="stat-card"><h3>$0</h3><p>Ingreso Total</p></div>');e.forEach(function(e){var n=t.insertRow();n.insertCell(0).textContent=e.nombre,["lunes","martes","miercoles","jueves","viernes"].forEach(function(t){var a=n.insertCell(),d=e[t];"Ninguno"===d.plato?a.innerHTML='<em style="color:#999">Sin pedido</em>':a.innerHTML="<strong>"+d.plato+"</strong><br><small>"+d.guarnicion1+", "+d.guarnicion2+"</small>"}),n.insertCell(6).textContent=e.fecha});var n=0;e.forEach(function(e){["lunes","martes","miercoles","jueves","viernes"].forEach(function(t){"Ninguno"!==e[t].plato&&n++})});var a=e.length,d=130*n;document.getElementById("summaryStats").innerHTML='<div class="stat-card"><h3>'+a+'</h3><p>Empleados</p></div><div class="stat-card"><h3>'+n+'</h3><p>Menús Totales</p></div><div class="stat-card"><h3>$'+d.toLocaleString("es-MX")+'</h3><p>Ingreso Total</p></div>'}function exportToExcel(){var e=getOrders();if(0===e.length)return void alert("No hay pedidos para exportar");var t="Nombre,Día,Plato Fuerte,Guarnición 1,Guarnición 2,Fecha\n";e.forEach(function(e){["lunes","martes","miercoles","jueves","viernes"].forEach(function(n){var a=e[n],d=n.charAt(0).toUpperCase()+n.slice(1);t+="Ninguno"===a.plato?'"'+e.nombre+'","'+d+'","Sin pedido","--","--","'+e.fecha+'"\n':'"'+e.nombre+'","'+d+'","'+a.plato+'","'+a.guarnicion1+'","'+a.guarnicion2+'","'+e.fecha+'"\n'})});var n=new Blob([t],{type:"text/csv;charset=utf-8;"}),a=document.createElement("a"),d=URL.createObjectURL(n);a.setAttribute("href",d),a.setAttribute("download","pedidos_market_fresh_"+(new Date).toISOString().split("T")[0]+".csv"),a.style.visibility="hidden",document.body.appendChild(a),a.click(),document.body.removeChild(a)}function clearAllOrders(){confirm("⚠️ ¿Estás seguro de que quieres eliminar TODOS los pedidos? Esta acción no se puede deshacer.")&&confirm("Esta es tu última oportunidad. ¿Realmente quieres borrar todo?")&&(localStorage.removeItem("marketFreshOrders"),loadOrders(),alert("✅ Todos los pedidos han sido eliminados"))}document.addEventListener("DOMContentLoaded",function(){document.getElementById("orderForm").addEventListener("submit",function(e){e.preventDefault();var t=new FormData(this),n={nombre:t.get("employeeName"),fecha:(new Date).toLocaleString("es-MX"),lunes:{plato:t.get("lunes-plato"),guarnicion1:t.get("lunes-guarnicion1"),guarnicion2:t.get("lunes-guarnicion2")},martes:{plato:t.get("martes-plato"),guarnicion1:t.get("martes-guarnicion1"),guarnicion2:t.get("martes-guarnicion2")},miercoles:{plato:t.get("miercoles-plato"),guarnicion1:t.get("miercoles-guarnicion1"),guarnicion2:t.get("miercoles-guarnicion2")},jueves:{plato:t.get("jueves-plato"),guarnicion1:t.get("jueves-guarnicion1"),guarnicion2:t.get("jueves-guarnicion2")},viernes:{plato:t.get("viernes-plato"),guarnicion1:t.get("viernes-guarnicion1"),guarnicion2:t.get("viernes-guarnicion2")}},a=getOrders();a.push(n),saveOrders(a),document.getElementById("successMessage").style.display="block",this.reset(),document.getElementById("successMessage").scrollIntoView({behavior:"smooth",block:"center"}),setTimeout(function(){document.getElementById("successMessage").style.display="none"},5e3)}),document.getElementById("adminPassword").addEventListener("keypress",function(e){"Enter"===e.key&&checkPassword()}),document.getElementById("passwordModal").addEventListener("click",function(e){e.target===this&&closePasswordModal()})});
+var ADMIN_PASSWORD='ULINE2025';
+var days=['lunes','martes','miercoles','jueves','viernes'];
+var dayNames={'lunes':'Lunes','martes':'Martes','miercoles':'Miércoles','jueves':'Jueves','viernes':'Viernes'};
+
+function updateDayPrice(day){
+var select=document.getElementById('select-'+day);
+var value=select.value;
+if(!value)return;
+var parts=value.split('|');
+var nombre=parts[0];
+var precio=parseInt(parts[1])||0;
+document.getElementById('price-'+day).textContent='$'+precio;
+var garnishContainer=document.getElementById('garnish-'+day);
+var guar1=document.getElementById('guar1-'+day);
+var guar2=document.getElementById('guar2-'+day);
+var note=document.getElementById('note-'+day);
+if(nombre.includes('*')){
+garnishContainer.style.display='grid';
+guar1.disabled=false;
+guar2.disabled=false;
+note.textContent='* Este platillo requiere 2 guarniciones';
+note.style.color='#0047AB';
+}else{
+garnishContainer.style.display='none';
+guar1.disabled=true;
+guar2.disabled=true;
+guar1.value='';
+guar2.value='';
+note.textContent='';
+}
+updateTotal();
+}
+
+function updateTotal(){
+var total=0;
+days.forEach(function(day){
+var select=document.getElementById('select-'+day);
+if(select.value){
+var precio=parseInt(select.value.split('|')[1])||0;
+total+=precio;
+}
+});
+document.getElementById('totalAmount').textContent='$'+total.toLocaleString('es-MX');
+}
+
+function getOrders(){
+try{
+var stored=localStorage.getItem('marketFreshOrders');
+return stored?JSON.parse(stored):[];
+}catch(e){
+console.error('Error loading orders:',e);
+return[];
+}
+}
+
+function saveOrders(orders){
+try{
+localStorage.setItem('marketFreshOrders',JSON.stringify(orders));
+return true;
+}catch(e){
+console.error('Error saving orders:',e);
+alert('Error al guardar el pedido. Por favor intenta de nuevo.');
+return false;
+}
+}
+
+function showSuccessModal(orderData){
+var summary='<p><strong>Nombre:</strong> '+orderData.nombre+'</p>';
+summary+='<p><strong>Total a pagar:</strong> $'+orderData.total+'</p>';
+summary+='<hr style="margin:15px 0">';
+days.forEach(function(day){
+var dayData=orderData[day];
+if(dayData.nombre!=='ninguno'){
+summary+='<p><strong>'+dayNames[day]+':</strong> '+dayData.nombre;
+if(dayData.guarnicion1){
+summary+=' ('+dayData.guarnicion1+', '+dayData.guarnicion2+')';
+}
+summary+=' - $'+dayData.precio+'</p>';
+}
+});
+document.getElementById('orderSummary').innerHTML=summary;
+document.getElementById('successModal').style.display='flex';
+}
+
+function closeSuccessModal(){
+document.getElementById('successModal').style.display='none';
+}
+
+function toggleAdmin(){
+document.getElementById('passwordModal').style.display='block';
+document.getElementById('adminPassword').value='';
+document.getElementById('passwordError').style.display='none';
+setTimeout(function(){document.getElementById('adminPassword').focus()},100);
+}
+
+function closePasswordModal(){
+document.getElementById('passwordModal').style.display='none';
+}
+
+function checkPassword(){
+if(document.getElementById('adminPassword').value===ADMIN_PASSWORD){
+closePasswordModal();
+showAdminPanel();
+}else{
+document.getElementById('passwordError').style.display='block';
+document.getElementById('adminPassword').value='';
+document.getElementById('adminPassword').focus();
+}
+}
+
+function showAdminPanel(){
+var adminSection=document.getElementById('adminSection');
+adminSection.style.display='block';
+loadOrders();
+adminSection.scrollIntoView({behavior:'smooth'});
+}
+
+function loadOrders(){
+var orders=getOrders();
+var tbody=document.getElementById('ordersBody');
+tbody.innerHTML='';
+if(orders.length===0){
+tbody.innerHTML='<tr><td colspan="8" style="text-align:center;padding:40px;color:#6c757d">No hay pedidos registrados aún</td></tr>';
+document.getElementById('summaryStats').innerHTML='<div class="stat-card"><h3>0</h3><p>Empleados</p></div><div class="stat-card"><h3>0</h3><p>Platillos</p></div><div class="stat-card"><h3>$0</h3><p>Ingreso Total</p></div>';
+return;
+}
+var totalPlatillos=0;
+var totalIngresos=0;
+orders.forEach(function(order){
+var row=tbody.insertRow();
+row.insertCell(0).textContent=order.nombre;
+days.forEach(function(day){
+var cell=row.insertCell();
+var dayData=order[day];
+if(dayData.nombre==='ninguno'){
+cell.innerHTML='<em style="color:#999">Sin pedido</em>';
+}else{
+var html='<strong>'+dayData.nombre+'</strong><br><small>$'+dayData.precio+'</small>';
+if(dayData.guarnicion1){
+html+='<br><small style="color:#666">'+dayData.guarnicion1+', '+dayData.guarnicion2+'</small>';
+}
+cell.innerHTML=html;
+totalPlatillos++;
+totalIngresos+=dayData.precio;
+}
+});
+row.insertCell(6).innerHTML='<strong>$'+order.total+'</strong>';
+row.insertCell(7).textContent=order.fecha;
+});
+document.getElementById('summaryStats').innerHTML='<div class="stat-card"><h3>'+orders.length+'</h3><p>Empleados</p></div><div class="stat-card"><h3>'+totalPlatillos+'</h3><p>Platillos</p></div><div class="stat-card"><h3>$'+totalIngresos.toLocaleString('es-MX')+'</h3><p>Ingreso Total</p></div>';
+}
+
+function exportToExcel(){
+var orders=getOrders();
+if(orders.length===0){alert('No hay pedidos para exportar');return;}
+var csv='Nombre,Día,Platillo,Precio,Guarnición 1,Guarnición 2,Fecha\n';
+orders.forEach(function(order){
+days.forEach(function(day){
+var dayData=order[day];
+var dayName=dayNames[day];
+if(dayData.nombre==='ninguno'){
+csv+='"'+order.nombre+'","'+dayName+'","Sin pedido","0","--","--","'+order.fecha+'"\n';
+}else{
+csv+='"'+order.nombre+'","'+dayName+'","'+dayData.nombre+'","'+dayData.precio+'","'+(dayData.guarnicion1||'--')+'","'+(dayData.guarnicion2||'--')+'","'+order.fecha+'"\n';
+}
+});
+});
+var blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+var link=document.createElement('a');
+var url=URL.createObjectURL(blob);
+link.setAttribute('href',url);
+link.setAttribute('download','pedidos_market_fresh_'+(new Date).toISOString().split('T')[0]+'.csv');
+link.style.visibility='hidden';
+document.body.appendChild(link);
+link.click();
+document.body.removeChild(link);
+}
+
+function clearAllOrders(){
+if(confirm('⚠️ ¿Estás seguro de que quieres eliminar TODOS los pedidos? Esta acción no se puede deshacer.')){
+if(confirm('Esta es tu última oportunidad. ¿Realmente quieres borrar todo?')){
+localStorage.removeItem('marketFreshOrders');
+loadOrders();
+alert('✅ Todos los pedidos han sido eliminados');
+}
+}
+}
+
+document.addEventListener('DOMContentLoaded',function(){
+console.log('✅ Sistema Market Fresh ULINE cargado');
+document.getElementById('orderForm').addEventListener('submit',function(e){
+e.preventDefault();
+console.log('📝 Procesando pedido...');
+var isValid=true;
+var errorMsg='';
+var nombre=document.getElementById('employeeName').value.trim();
+if(!nombre){
+alert('⚠️ Por favor ingresa tu nombre completo');
+document.getElementById('employeeName').focus();
+return;
+}
+days.forEach(function(day){
+if(!isValid)return;
+var select=document.getElementById('select-'+day);
+var value=select.value;
+if(!value){
+isValid=false;
+errorMsg='Por favor selecciona un platillo para '+dayNames[day].toUpperCase();
+select.focus();
+return;
+}
+var nombrePlato=value.split('|')[0];
+if(nombrePlato.includes('*')){
+var guar1=document.getElementById('guar1-'+day);
+var guar2=document.getElementById('guar2-'+day);
+if(!guar1.value||!guar2.value){
+isValid=false;
+errorMsg='Por favor selecciona las 2 guarniciones para '+dayNames[day].toUpperCase();
+if(!guar1.value)guar1.focus();
+else guar2.focus();
+return;
+}
+}
+});
+if(!isValid){
+alert('⚠️ '+errorMsg);
+return;
+}
+var total=0;
+var orderData={
+nombre:nombre,
+fecha:(new Date).toLocaleString('es-MX')
+};
+days.forEach(function(day){
+var select=document.getElementById('select-'+day);
+var value=select.value.split('|');
+var nombrePlato=value[0];
+var precio=parseInt(value[1])||0;
+total+=precio;
+orderData[day]={
+nombre:nombrePlato,
+precio:precio,
+guarnicion1:document.getElementById('guar1-'+day).value||'',
+guarnicion2:document.getElementById('guar2-'+day).value||''
+};
+});
+orderData.total=total;
+console.log('💾 Guardando pedido:',orderData);
+var orders=getOrders();
+orders.push(orderData);
+if(saveOrders(orders)){
+console.log('✅ Pedido guardado exitosamente');
+showSuccessModal(orderData);
+this.reset();
+days.forEach(function(day){
+document.getElementById('price-'+day).textContent='$0';
+document.getElementById('garnish-'+day).style.display='none';
+document.getElementById('note-'+day).textContent='';
+document.getElementById('guar1-'+day).disabled=true;
+document.getElementById('guar2-'+day).disabled=true;
+});
+updateTotal();
+window.scrollTo({top:0,behavior:'smooth'});
+}
+});
+document.getElementById('adminPassword').addEventListener('keypress',function(e){
+if(e.key==='Enter')checkPassword();
+});
+document.getElementById('passwordModal').addEventListener('click',function(e){
+if(e.target===this)closePasswordModal();
+});
+document.getElementById('successModal').addEventListener('click',function(e){
+if(e.target===this)closeSuccessModal();
+});
+});
 </script>
 </body>
 </html>
