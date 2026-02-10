@@ -39,7 +39,8 @@ body{margin:0;padding:0;font-family:Arial,sans-serif;background:linear-gradient(
 .submit-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(40,167,69,0.4)}
 .submit-btn:disabled{background:#ccc;cursor:not-allowed;transform:none}
 .loading{display:none;text-align:center;padding:20px;color:#0047AB;font-weight:bold}
-.modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;justify-content:center;align-items:center}
+.modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999}
+.modal-overlay.show{display:flex!important;justify-content:center;align-items:center}
 .modal-content{background:#fff;padding:40px;border-radius:20px;text-align:center;max-width:500px;margin:20px;box-shadow:0 10px 40px rgba(0,0,0,0.3);animation:slideIn 0.3s ease}
 @keyframes slideIn{from{transform:translateY(-50px);opacity:0}to{transform:translateY(0);opacity:1}}
 .modal-content h2{color:#28a745;font-size:2.5em;margin:0 0 20px 0}
@@ -98,6 +99,14 @@ body{margin:0;padding:0;font-family:Arial,sans-serif;background:linear-gradient(
 <div class="input-group">
 <label for="employeeName">Nombre Completo *</label>
 <input type="text" id="employeeName" required placeholder="Ingresa tu nombre completo">
+</div>
+<div class="input-group">
+<label for="pickupLocation">¿Dónde recogerás tu pedido? *</label>
+<select id="pickupLocation" required style="width:100%;padding:12px;border:2px solid #ddd;border-radius:8px;font-size:1em;background:#fff">
+<option value="">Selecciona una ubicación...</option>
+<option value="Comedor Oficinas">🏢 Comedor de Oficinas</option>
+<option value="Comedor Almacén">📦 Comedor de Almacén</option>
+</select>
 </div>
 </div>
 
@@ -455,7 +464,7 @@ body{margin:0;padding:0;font-family:Arial,sans-serif;background:linear-gradient(
 </div>
 </div>
 <div class="summary-stats" id="summaryStats"></div>
-<div class="orders-table"><table><thead><tr><th>Nombre</th><th>Lunes</th><th>Martes</th><th>Miércoles</th><th>Jueves</th><th>Viernes</th><th>Total</th><th>Fecha</th></tr></thead><tbody id="ordersBody"></tbody></table></div>
+<div class="orders-table"><table><thead><tr><th>Nombre</th><th>Ubicación</th><th>Lunes</th><th>Martes</th><th>Miércoles</th><th>Jueves</th><th>Viernes</th><th>Total</th><th>Fecha</th></tr></thead><tbody id="ordersBody"></tbody></table></div>
 </div>
 </div>
 </div>
@@ -532,16 +541,20 @@ document.getElementById('totalAmount').textContent='$'+total.toLocaleString('es-
 }
 
 function sendOrderToSheets(orderData){
+console.log('📤 Enviando a Google Sheets:', orderData);
 return fetch(GOOGLE_SCRIPT_URL,{
 method:'POST',
 mode:'no-cors',
 headers:{'Content-Type':'application/json'},
 body:JSON.stringify(orderData)
 }).then(function(){
-console.log('✅ Pedido enviado a Google Sheets');
+console.log('✅ Pedido enviado exitosamente');
+setTimeout(function(){
+console.log('⏱️ Esperando confirmación...');
+},500);
 return true;
 }).catch(function(error){
-console.error('❌ Error:',error);
+console.error('❌ Error al enviar:',error);
 return false;
 });
 }
@@ -567,7 +580,7 @@ function displayOrders(orders){
 var tbody=document.getElementById('ordersBody');
 tbody.innerHTML='';
 if(orders.length===0){
-tbody.innerHTML='<tr><td colspan="8" style="text-align:center;padding:40px;color:#6c757d">No hay pedidos registrados aún</td></tr>';
+tbody.innerHTML='<tr><td colspan="9" style="text-align:center;padding:40px;color:#6c757d">No hay pedidos registrados aún</td></tr>';
 document.getElementById('summaryStats').innerHTML='<div class="stat-card"><h3>0</h3><p>Empleados</p></div><div class="stat-card"><h3>0</h3><p>Platillos</p></div><div class="stat-card"><h3>$0</h3><p>Ingreso Total</p></div>';
 return;
 }
@@ -576,6 +589,13 @@ var totalIngresos=0;
 orders.forEach(function(order){
 var row=tbody.insertRow();
 row.insertCell(0).textContent=order.nombre;
+var ubicacionCell=row.insertCell(1);
+ubicacionCell.textContent=order.ubicacion||'--';
+if(order.ubicacion==='Comedor Oficinas'){
+ubicacionCell.innerHTML='🏢 Oficinas';
+}else if(order.ubicacion==='Comedor Almacén'){
+ubicacionCell.innerHTML='📦 Almacén';
+}
 days.forEach(function(day){
 var cell=row.insertCell();
 var dayData=order[day];
@@ -600,22 +620,28 @@ document.getElementById('summaryStats').innerHTML='<div class="stat-card"><h3>'+
 }
 
 function showSuccessModal(orderData){
+console.log('📋 Preparando modal con datos:', orderData);
 var summary='<p><strong>Nombre:</strong> '+orderData.nombre+'</p>';
+summary+='<p><strong>Ubicación:</strong> '+orderData.ubicacion+'</p>';
 summary+='<p><strong>Total:</strong> $'+orderData.total+'</p><hr style="margin:15px 0">';
 days.forEach(function(day){
 var dayData=orderData[day];
-if(dayData.nombre!=='ninguno'){
+if(dayData && dayData.nombre && dayData.nombre!=='ninguno'){
 summary+='<p><strong>'+dayNames[day]+':</strong> '+dayData.nombre;
 if(dayData.guarnicion1){summary+=' ('+dayData.guarnicion1+', '+dayData.guarnicion2+')';}
 summary+=' - $'+dayData.precio+'</p>';
 }
 });
 document.getElementById('orderSummary').innerHTML=summary;
-document.getElementById('successModal').style.display='flex';
+var modal=document.getElementById('successModal');
+modal.className='modal-overlay show';
+console.log('✅ Modal mostrado con clase:', modal.className);
 }
 
 function closeSuccessModal(){
-document.getElementById('successModal').style.display='none';
+var modal=document.getElementById('successModal');
+modal.className='modal-overlay';
+console.log('❌ Modal cerrado');
 }
 
 function toggleAdmin(){
@@ -650,15 +676,15 @@ adminSection.scrollIntoView({behavior:'smooth'});
 function exportToExcel(){
 loadOrdersFromSheets().then(function(orders){
 if(orders.length===0){alert('No hay pedidos para exportar');return;}
-var csv='Nombre,Día,Platillo,Precio,Guarnición 1,Guarnición 2,Fecha\n';
+var csv='Nombre,Ubicación,Día,Platillo,Precio,Guarnición 1,Guarnición 2,Fecha\n';
 orders.forEach(function(order){
 days.forEach(function(day){
 var dayData=order[day];
 var dayName=dayNames[day];
 if(dayData.nombre==='ninguno'||!dayData.nombre){
-csv+='"'+order.nombre+'","'+dayName+'","Sin pedido","0","--","--","'+order.fecha+'"\n';
+csv+='"'+order.nombre+'","'+(order.ubicacion||'--')+'","'+dayName+'","Sin pedido","0","--","--","'+order.fecha+'"\n';
 }else{
-csv+='"'+order.nombre+'","'+dayName+'","'+dayData.nombre+'","'+dayData.precio+'","'+(dayData.guarnicion1||'--')+'","'+(dayData.guarnicion2||'--')+'","'+order.fecha+'"\n';
+csv+='"'+order.nombre+'","'+(order.ubicacion||'--')+'","'+dayName+'","'+dayData.nombre+'","'+dayData.precio+'","'+(dayData.guarnicion1||'--')+'","'+(dayData.guarnicion2||'--')+'","'+order.fecha+'"\n';
 }
 });
 });
@@ -685,9 +711,15 @@ var loadingMsg=document.getElementById('loadingMsg');
 var isValid=true;
 var errorMsg='';
 var nombre=document.getElementById('employeeName').value.trim();
+var ubicacion=document.getElementById('pickupLocation').value;
 if(!nombre){
 alert('⚠️ Ingresa tu nombre');
 document.getElementById('employeeName').focus();
+return;
+}
+if(!ubicacion){
+alert('⚠️ Selecciona dónde recogerás tu pedido');
+document.getElementById('pickupLocation').focus();
 return;
 }
 days.forEach(function(day){
@@ -716,7 +748,7 @@ submitBtn.disabled=true;
 submitBtn.textContent='⏳ Enviando...';
 loadingMsg.style.display='block';
 var total=0;
-var orderData={nombre:nombre,fecha:(new Date).toLocaleString('es-MX')};
+var orderData={nombre:nombre,ubicacion:ubicacion,fecha:(new Date).toLocaleString('es-MX')};
 days.forEach(function(day){
 var select=document.getElementById('select-'+day);
 var value=select.value.split('|');
@@ -732,10 +764,11 @@ guarnicion2:document.getElementById('guar2-'+day).value||''
 });
 orderData.total=total;
 sendOrderToSheets(orderData).then(function(success){
+console.log('🔄 Respuesta recibida. Success:', success);
 submitBtn.disabled=false;
 submitBtn.textContent='✅ ENVIAR MI PEDIDO SEMANAL';
 loadingMsg.style.display='none';
-if(success){
+console.log('🎉 Mostrando modal de éxito...');
 showSuccessModal(orderData);
 document.getElementById('orderForm').reset();
 days.forEach(function(day){
@@ -747,9 +780,6 @@ document.getElementById('guar2-'+day).disabled=true;
 });
 updateTotal();
 window.scrollTo({top:0,behavior:'smooth'});
-}else{
-alert('⚠️ Error al enviar. Intenta de nuevo.');
-}
 });
 });
 document.getElementById('adminPassword').addEventListener('keypress',function(e){
@@ -759,7 +789,9 @@ document.getElementById('passwordModal').addEventListener('click',function(e){
 if(e.target===this)closePasswordModal();
 });
 document.getElementById('successModal').addEventListener('click',function(e){
-if(e.target===this)closeSuccessModal();
+if(e.target===this){
+closeSuccessModal();
+}
 });
 });
 </script>
