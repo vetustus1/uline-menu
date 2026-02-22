@@ -100,6 +100,23 @@ body{margin:0;padding:0;font-family:Arial,sans-serif;background:linear-gradient(
 <option value="Comedor Almacén">📦 Comedor de Almacén</option>
 </select>
 </div>
+<div class="input-group">
+<label for="pickupTime">⏰ Horario de Recogida *</label>
+<select id="pickupTime" required>
+<option value="">Selecciona un horario...</option>
+<option value="11:30">11:30 AM</option>
+<option value="12:00">12:00 PM</option>
+<option value="12:30">12:30 PM</option>
+<option value="13:00">1:00 PM</option>
+<option value="13:30">1:30 PM</option>
+<option value="14:00">2:00 PM</option>
+<option value="Otro">Otro horario</option>
+</select>
+</div>
+<div class="input-group" id="customTimeGroup" style="display:none">
+<label for="customTime">Especifica otro horario</label>
+<input type="text" id="customTime" placeholder="Ej: 10:30 AM">
+</div>
 </div>
 
 <div class="form-section">
@@ -195,7 +212,7 @@ var menuSemanal = {
       {"nombre": "Ensalada Cesar", "precio": 84}
     ],
     "especiales": [
-      {"nombre": "Milanesa de Res a la mexicana chapata jamon", "precio": 98},
+      {"nombre": "Milanesa de Res a la Mexicana", "precio": 98},
       {"nombre": "Pasta fria con panela", "precio": 84}
     ]
   },
@@ -462,6 +479,7 @@ function showSuccessModal(orderData){
   }
   summary += '</p>';
   summary += '<p><strong>Ubicación:</strong> ' + orderData.ubicacion + '</p>';
+  summary += '<p><strong>Horario de Recogida:</strong> ⏰ ' + orderData.horario + '</p>';
   summary += '<p><strong>Fecha y Hora:</strong> ' + orderData.fechaHora + '</p>';
   summary += '<p><strong>Total:</strong> $' + orderData.total + '</p><hr>';
   
@@ -518,6 +536,21 @@ document.addEventListener('DOMContentLoaded', function(){
   // Generar menús dinámicos
   generarMenusDias();
   
+  // Manejar selector de horario
+  document.getElementById('pickupTime').addEventListener('change', function(){
+    var customTimeGroup = document.getElementById('customTimeGroup');
+    var customTimeInput = document.getElementById('customTime');
+    
+    if(this.value === 'Otro'){
+      customTimeGroup.style.display = 'block';
+      customTimeInput.required = true;
+    } else {
+      customTimeGroup.style.display = 'none';
+      customTimeInput.required = false;
+      customTimeInput.value = '';
+    }
+  });
+  
   document.getElementById('orderForm').addEventListener('submit', function(e){
     e.preventDefault();
     
@@ -527,6 +560,8 @@ document.addEventListener('DOMContentLoaded', function(){
     // Validaciones
     var nombre = document.getElementById('employeeName').value.trim();
     var ubicacion = document.getElementById('pickupLocation').value;
+    var horario = document.getElementById('pickupTime').value;
+    var horarioCustom = document.getElementById('customTime').value.trim();
     
     if (!nombre) {
       alert('⚠️ Ingresa tu nombre');
@@ -537,6 +572,19 @@ document.addEventListener('DOMContentLoaded', function(){
       alert('⚠️ Selecciona dónde recogerás tu pedido');
       return;
     }
+    
+    if (!horario) {
+      alert('⚠️ Selecciona un horario de recogida');
+      return;
+    }
+    
+    if (horario === 'Otro' && !horarioCustom) {
+      alert('⚠️ Especifica el horario personalizado');
+      return;
+    }
+    
+    // Determinar horario final
+    var horarioFinal = horario === 'Otro' ? horarioCustom : horario;
     
     // Validar que al menos un día tenga pedido
     var alMenosUnDia = false;
@@ -594,6 +642,7 @@ document.addEventListener('DOMContentLoaded', function(){
       nombre: nombre,
       turnoNocturno: document.getElementById('nightShift').checked,
       ubicacion: ubicacion,
+      horario: horarioFinal,
       fechaHora: fechaHora
     };
     
