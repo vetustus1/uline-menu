@@ -122,10 +122,7 @@ body{margin:0;padding:0;font-family:Arial,sans-serif;background:linear-gradient(
 <div class="form-section">
 <h2>🍴 Selecciona tus Menús de la Semana</h2>
 <p style="color:#666;margin-bottom:20px">💡 Cada día tiene opciones diferentes. Los platillos con proteína incluyen 2 guarniciones.</p>
-
-<!-- Los días se generarán dinámicamente con JavaScript -->
 <div id="daysContainer"></div>
-
 </div>
 
 <div class="total-section">
@@ -140,7 +137,6 @@ body{margin:0;padding:0;font-family:Arial,sans-serif;background:linear-gradient(
 </div>
 </div>
 
-<!-- Success Modal -->
 <div id="successModal" class="modal-overlay">
 <div class="modal-content">
 <div class="checkmark">✅</div>
@@ -152,9 +148,6 @@ body{margin:0;padding:0;font-family:Arial,sans-serif;background:linear-gradient(
 </div>
 
 <script>
-var GOOGLE_SCRIPT_URL='https://script.google.com/macros/s/AKfycbyhk_durX7DT301eJ5cfgWui65eCEj82nOiKDu_0ariEqVspoZaTiuvwpKQSlTf_W8/exec';
-
-// MENÚ SEMANAL - Datos extraídos del Excel
 var menuSemanal = {
   "lunes": {
     "proteinas": [
@@ -163,16 +156,16 @@ var menuSemanal = {
       {"nombre": "Mole con pechuga de pollo", "precio": 95},
       {"nombre": "Picadillo", "precio": 95},
       {"nombre": "Chile relleno de carne", "precio": 95},
-      {"nombre": "Cortadillo de res", "precio": 95},
+      {"nombre": "Cortadillo", "precio": 95},
       {"nombre": "Chile relleno de queso", "precio": 95}
     ],
-    "guarniciones": ["Arroz", "Frijoles", "Puré papa", "Espaguetti Poblano", "Ensalada de lechugas mixtas"],
+    "guarniciones": ["Arroz", "Frijoles", "Puré papa", "Espaguetti Poblano", "Ensalada de lechugas mixtas", "Papitas Galeana Lemon Pepper"],
     "ensaladas": [
       {"nombre": "Ensalada de lechugas mixtas con pollo", "precio": 91},
-      {"nombre": "Ensalada Cesar", "precio": 84}
+      {"nombre": "Ensalada Búfalo con Pollo empanizado, panela, tortilla, salsa Búfalo y Ranch", "precio": 95}
     ],
     "especiales": [
-      {"nombre": "Chapata de pollo a la parrilla", "precio": 98},
+      {"nombre": "Pechuga rellena jamón y queso, puré, ensalada y pan", "precio": 99},
       {"nombre": "Panela en Salsa", "precio": 93}
     ]
   },
@@ -192,7 +185,7 @@ var menuSemanal = {
       {"nombre": "Ensalada de pollo con guarnicion de coditos", "precio": 91}
     ],
     "especiales": [
-      {"nombre": "Lasagna bolognesa con ensalada y pan", "precio": 116},
+      {"nombre": "Pasta Alfredo con Pollo, con ensalada y pan", "precio": 99},
       {"nombre": "Lasagna espinacas con ensalada y pan", "precio": 116}
     ]
   },
@@ -209,7 +202,7 @@ var menuSemanal = {
     "guarniciones": ["Arroz", "Frijoles", "Puré papa", "Espaguetti Poblano", "Verduras al vapor"],
     "ensaladas": [
       {"nombre": "Ensalada de lechugas mixtas con pollo", "precio": 91},
-      {"nombre": "Ensalada Cesar", "precio": 84}
+      {"nombre": "Ensalada Búfalo con Pollo empanizado, panela, tortilla, salsa Búfalo y Ranch", "precio": 95}
     ],
     "especiales": [
       {"nombre": "Milanesa de Res a la Mexicana", "precio": 98},
@@ -246,101 +239,44 @@ var menuSemanal = {
       {"nombre": "Discada", "precio": 95},
       {"nombre": "Chile relleno de queso", "precio": 95}
     ],
-    "guarniciones": ["Arroz", "Frijoles", "Puré papa", "Espaguetti Poblano", "Calabazas"],
+    "guarniciones": ["Arroz", "Frijoles", "Puré papa", "Espaguetti Poblano", "Calabazas", "Rajas Poblanas"],
     "ensaladas": [
       {"nombre": "Ensalada de lechugas mixtas con pollo", "precio": 91},
-      {"nombre": "Ensalada Cesar", "precio": 84}
+      {"nombre": "Ensalada Búfalo con Pollo empanizado, panela, tortilla, salsa Búfalo y Ranch", "precio": 95}
     ],
     "especiales": [
-      {"nombre": "Hamburguesa de Res con papas", "precio": 104},
+      {"nombre": "Torta de Pollo Grill con queso y aguacate, papas francesas", "precio": 99},
       {"nombre": "Hamburguesa Portobello", "precio": 102}
     ]
   }
 };
 
+var GOOGLE_SCRIPT_URL='https://script.google.com/macros/s/AKfycbyhk_durX7DT301eJ5cfgWui65eCEj82nOiKDu_0ariEqVspoZaTiuvwpKQSlTf_W8/exec';
 var dayNames = {'lunes':'Lunes','martes':'Martes','miercoles':'Miércoles','jueves':'Jueves','viernes':'Viernes'};
 var days = ['lunes','martes','miercoles','jueves','viernes'];
 
-// Generar los selectores de días dinámicamente
 function generarMenusDias() {
   var container = document.getElementById('daysContainer');
-  
   days.forEach(function(day) {
     var menu = menuSemanal[day];
     var daySection = document.createElement('div');
     daySection.className = 'day-section';
     daySection.id = 'day-' + day;
-    
     var html = '<h3>🗓️ ' + dayNames[day].toUpperCase() + ' <span class="day-price" id="price-' + day + '">$0</span></h3>';
-    
-    // Tipo de platillo
-    html += '<div class="selection-group">';
-    html += '<label>Selecciona tipo de platillo:</label>';
-    html += '<select name="' + day + '-tipo" id="tipo-' + day + '" required onchange="cambiarTipoPlatillo(\'' + day + '\')">';
-    html += '<option value="">Selecciona...</option>';
-    html += '<option value="ninguno">❌ Ninguno (no quiero este día)</option>';
-    html += '<option value="proteina">🍖 Menú del Día (Proteína + 2 Guarniciones)</option>';
-    html += '<option value="ensalada">🥗 Ensalada</option>';
-    html += '<option value="especial">⭐ Platillo Especial</option>';
-    html += '</select>';
-    html += '</div>';
-    
-    // Container para opciones de proteína
-    html += '<div id="proteina-container-' + day + '" style="display:none">';
-    html += '<div class="selection-group">';
-    html += '<label>Proteína:</label>';
-    html += '<select name="' + day + '-proteina" id="proteina-' + day + '" onchange="updateDayPrice(\'' + day + '\')">';
-    html += '<option value="">Selecciona proteína...</option>';
-    menu.proteinas.forEach(function(p) {
-      html += '<option value="' + p.nombre + '|' + p.precio + '">' + p.nombre + ' - $' + p.precio + '</option>';
-    });
-    html += '</select>';
-    html += '<div class="garnish-note">✅ Incluye 2 guarniciones de tu elección</div>';
-    html += '</div>';
-    
-    // Guarniciones
-    html += '<div class="garnish-container">';
-    html += '<div class="selection-group"><label>Guarnición 1:</label><select name="' + day + '-guar1" id="guar1-' + day + '">';
-    html += '<option value="">Selecciona...</option>';
-    menu.guarniciones.forEach(function(g) {
-      html += '<option value="' + g + '">' + g + '</option>';
-    });
-    html += '</select></div>';
-    html += '<div class="selection-group"><label>Guarnición 2:</label><select name="' + day + '-guar2" id="guar2-' + day + '">';
-    html += '<option value="">Selecciona...</option>';
-    menu.guarniciones.forEach(function(g) {
-      html += '<option value="' + g + '">' + g + '</option>';
-    });
-    html += '</select></div>';
-    html += '</div>';
-    html += '</div>';
-    
-    // Container para ensaladas
-    html += '<div id="ensalada-container-' + day + '" style="display:none">';
-    html += '<div class="selection-group">';
-    html += '<label>Ensalada:</label>';
-    html += '<select name="' + day + '-ensalada" id="ensalada-' + day + '" onchange="updateDayPrice(\'' + day + '\')">';
-    html += '<option value="">Selecciona ensalada...</option>';
-    menu.ensaladas.forEach(function(e) {
-      html += '<option value="' + e.nombre + '|' + e.precio + '">' + e.nombre + ' - $' + e.precio + '</option>';
-    });
-    html += '</select>';
-    html += '</div>';
-    html += '</div>';
-    
-    // Container para especiales
-    html += '<div id="especial-container-' + day + '" style="display:none">';
-    html += '<div class="selection-group">';
-    html += '<label>Platillo Especial:</label>';
-    html += '<select name="' + day + '-especial" id="especial-' + day + '" onchange="updateDayPrice(\'' + day + '\')">';
-    html += '<option value="">Selecciona platillo...</option>';
-    menu.especiales.forEach(function(e) {
-      html += '<option value="' + e.nombre + '|' + e.precio + '">' + e.nombre + ' - $' + e.precio + '</option>';
-    });
-    html += '</select>';
-    html += '</div>';
-    html += '</div>';
-    
+    html += '<div class="selection-group"><label>Selecciona tipo de platillo:</label><select name="' + day + '-tipo" id="tipo-' + day + '" required onchange="cambiarTipoPlatillo(\'' + day + '\')"><option value="">Selecciona...</option><option value="ninguno">❌ Ninguno (no quiero este día)</option><option value="proteina">🍖 Menú del Día (Proteína + 2 Guarniciones)</option><option value="ensalada">🥗 Ensalada</option><option value="especial">⭐ Platillo Especial</option></select></div>';
+    html += '<div id="proteina-container-' + day + '" style="display:none"><div class="selection-group"><label>Proteína:</label><select name="' + day + '-proteina" id="proteina-' + day + '" onchange="updateDayPrice(\'' + day + '\')"><option value="">Selecciona proteína...</option>';
+    menu.proteinas.forEach(function(p) { html += '<option value="' + p.nombre + '|' + p.precio + '">' + p.nombre + ' - $' + p.precio + '</option>'; });
+    html += '</select><div class="garnish-note">✅ Incluye 2 guarniciones de tu elección</div></div><div class="garnish-container"><div class="selection-group"><label>Guarnición 1:</label><select name="' + day + '-guar1" id="guar1-' + day + '"><option value="">Selecciona...</option>';
+    menu.guarniciones.forEach(function(g) { html += '<option value="' + g + '">' + g + '</option>'; });
+    html += '</select></div><div class="selection-group"><label>Guarnición 2:</label><select name="' + day + '-guar2" id="guar2-' + day + '"><option value="">Selecciona...</option>';
+    menu.guarniciones.forEach(function(g) { html += '<option value="' + g + '">' + g + '</option>'; });
+    html += '</select></div></div></div>';
+    html += '<div id="ensalada-container-' + day + '" style="display:none"><div class="selection-group"><label>Ensalada:</label><select name="' + day + '-ensalada" id="ensalada-' + day + '" onchange="updateDayPrice(\'' + day + '\')"><option value="">Selecciona ensalada...</option>';
+    menu.ensaladas.forEach(function(e) { html += '<option value="' + e.nombre + '|' + e.precio + '">' + e.nombre + ' - $' + e.precio + '</option>'; });
+    html += '</select></div></div>';
+    html += '<div id="especial-container-' + day + '" style="display:none"><div class="selection-group"><label>Platillo Especial:</label><select name="' + day + '-especial" id="especial-' + day + '" onchange="updateDayPrice(\'' + day + '\')"><option value="">Selecciona platillo...</option>';
+    menu.especiales.forEach(function(e) { html += '<option value="' + e.nombre + '|' + e.precio + '">' + e.nombre + ' - $' + e.precio + '</option>'; });
+    html += '</select></div></div>';
     daySection.innerHTML = html;
     container.appendChild(daySection);
   });
@@ -348,52 +284,33 @@ function generarMenusDias() {
 
 function cambiarTipoPlatillo(day) {
   var tipo = document.getElementById('tipo-' + day).value;
-  
-  // Ocultar todos los containers
   document.getElementById('proteina-container-' + day).style.display = 'none';
   document.getElementById('ensalada-container-' + day).style.display = 'none';
   document.getElementById('especial-container-' + day).style.display = 'none';
-  
-  // Limpiar selecciones
   document.getElementById('proteina-' + day).value = '';
   document.getElementById('ensalada-' + day).value = '';
   document.getElementById('especial-' + day).value = '';
   document.getElementById('guar1-' + day).value = '';
   document.getElementById('guar2-' + day).value = '';
-  
-  // Mostrar el container correspondiente
-  if (tipo === 'proteina') {
-    document.getElementById('proteina-container-' + day).style.display = 'block';
-  } else if (tipo === 'ensalada') {
-    document.getElementById('ensalada-container-' + day).style.display = 'block';
-  } else if (tipo === 'especial') {
-    document.getElementById('especial-container-' + day).style.display = 'block';
-  }
-  
+  if (tipo === 'proteina') { document.getElementById('proteina-container-' + day).style.display = 'block'; }
+  else if (tipo === 'ensalada') { document.getElementById('ensalada-container-' + day).style.display = 'block'; }
+  else if (tipo === 'especial') { document.getElementById('especial-container-' + day).style.display = 'block'; }
   updateDayPrice(day);
 }
 
 function updateDayPrice(day) {
   var tipo = document.getElementById('tipo-' + day).value;
   var precio = 0;
-  
   if (tipo === 'proteina') {
     var proteinaVal = document.getElementById('proteina-' + day).value;
-    if (proteinaVal) {
-      precio = parseInt(proteinaVal.split('|')[1]) || 0;
-    }
+    if (proteinaVal) { precio = parseInt(proteinaVal.split('|')[1]) || 0; }
   } else if (tipo === 'ensalada') {
     var ensaladaVal = document.getElementById('ensalada-' + day).value;
-    if (ensaladaVal) {
-      precio = parseInt(ensaladaVal.split('|')[1]) || 0;
-    }
+    if (ensaladaVal) { precio = parseInt(ensaladaVal.split('|')[1]) || 0; }
   } else if (tipo === 'especial') {
     var especialVal = document.getElementById('especial-' + day).value;
-    if (especialVal) {
-      precio = parseInt(especialVal.split('|')[1]) || 0;
-    }
+    if (especialVal) { precio = parseInt(especialVal.split('|')[1]) || 0; }
   }
-  
   document.getElementById('price-' + day).textContent = '$' + precio;
   updateTotal();
 }
@@ -410,282 +327,98 @@ function updateTotal() {
 
 function getDayOrder(day) {
   var tipo = document.getElementById('tipo-' + day).value;
-  
-  if (tipo === 'ninguno' || !tipo) {
-    return {
-      tipo: 'ninguno',
-      nombre: 'Sin pedido',
-      precio: 0,
-      guarnicion1: '',
-      guarnicion2: ''
-    };
-  }
-  
+  if (tipo === 'ninguno' || !tipo) { return {tipo: 'ninguno', nombre: 'Sin pedido', precio: 0, guarnicion1: '', guarnicion2: ''}; }
   if (tipo === 'proteina') {
     var proteinaVal = document.getElementById('proteina-' + day).value;
-    if (!proteinaVal) {
-      return {tipo: 'ninguno', nombre: 'Sin pedido', precio: 0, guarnicion1: '', guarnicion2: ''};
-    }
+    if (!proteinaVal) { return {tipo: 'ninguno', nombre: 'Sin pedido', precio: 0, guarnicion1: '', guarnicion2: ''}; }
     var parts = proteinaVal.split('|');
-    return {
-      tipo: 'proteina',
-      nombre: parts[0],
-      precio: parseInt(parts[1]),
-      guarnicion1: document.getElementById('guar1-' + day).value || '',
-      guarnicion2: document.getElementById('guar2-' + day).value || ''
-    };
+    return {tipo: 'proteina', nombre: parts[0], precio: parseInt(parts[1]), guarnicion1: document.getElementById('guar1-' + day).value || '', guarnicion2: document.getElementById('guar2-' + day).value || ''};
   }
-  
   if (tipo === 'ensalada') {
     var ensaladaVal = document.getElementById('ensalada-' + day).value;
-    if (!ensaladaVal) {
-      return {tipo: 'ninguno', nombre: 'Sin pedido', precio: 0, guarnicion1: '', guarnicion2: ''};
-    }
+    if (!ensaladaVal) { return {tipo: 'ninguno', nombre: 'Sin pedido', precio: 0, guarnicion1: '', guarnicion2: ''}; }
     var parts = ensaladaVal.split('|');
-    return {
-      tipo: 'ensalada',
-      nombre: parts[0],
-      precio: parseInt(parts[1]),
-      guarnicion1: '',
-      guarnicion2: ''
-    };
+    return {tipo: 'ensalada', nombre: parts[0], precio: parseInt(parts[1]), guarnicion1: '', guarnicion2: ''};
   }
-  
   if (tipo === 'especial') {
     var especialVal = document.getElementById('especial-' + day).value;
-    if (!especialVal) {
-      return {tipo: 'ninguno', nombre: 'Sin pedido', precio: 0, guarnicion1: '', guarnicion2: ''};
-    }
+    if (!especialVal) { return {tipo: 'ninguno', nombre: 'Sin pedido', precio: 0, guarnicion1: '', guarnicion2: ''}; }
     var parts = especialVal.split('|');
-    return {
-      tipo: 'especial',
-      nombre: parts[0],
-      precio: parseInt(parts[1]),
-      guarnicion1: '',
-      guarnicion2: ''
-    };
+    return {tipo: 'especial', nombre: parts[0], precio: parseInt(parts[1]), guarnicion1: '', guarnicion2: ''};
   }
-  
   return {tipo: 'ninguno', nombre: 'Sin pedido', precio: 0, guarnicion1: '', guarnicion2: ''};
 }
 
 function showSuccessModal(orderData){
-  console.log('📋 Mostrando modal de confirmación');
-  console.log('Datos del pedido:', orderData);
-  
   var summary = '<p><strong>Nombre:</strong> ' + orderData.nombre;
-  if (orderData.turnoNocturno) {
-    summary += ' <span class="night-badge">🌙 Nocturno</span>';
-  }
-  summary += '</p>';
-  summary += '<p><strong>Ubicación:</strong> ' + orderData.ubicacion + '</p>';
-  summary += '<p><strong>Horario de Recogida:</strong> ⏰ ' + orderData.horario + '</p>';
-  summary += '<p><strong>Fecha y Hora:</strong> ' + orderData.fechaHora + '</p>';
-  summary += '<p><strong>Total:</strong> $' + orderData.total + '</p><hr>';
-  
-  days.forEach(function(day){
-    var dayData = orderData[day];
-    if(dayData && dayData.nombre && dayData.nombre !== 'Sin pedido'){
-      summary += '<p><strong>' + dayNames[day] + ':</strong> ' + dayData.nombre;
-      if(dayData.guarnicion1){
-        summary += ' (' + dayData.guarnicion1 + ', ' + dayData.guarnicion2 + ')';
-      }
-      summary += ' - $' + dayData.precio + '</p>';
-    }
-  });
-  
-  console.log('Contenido del modal generado');
+  if (orderData.turnoNocturno) { summary += ' <span class="night-badge">🌙 Nocturno</span>'; }
+  summary += '</p><p><strong>Ubicación:</strong> ' + orderData.ubicacion + '</p><p><strong>Horario de Recogida:</strong> ⏰ ' + orderData.horario + '</p><p><strong>Fecha y Hora:</strong> ' + orderData.fechaHora + '</p><p><strong>Total:</strong> $' + orderData.total + '</p><hr>';
+  days.forEach(function(day){ var dayData = orderData[day]; if(dayData && dayData.nombre && dayData.nombre !== 'Sin pedido'){ summary += '<p><strong>' + dayNames[day] + ':</strong> ' + dayData.nombre; if(dayData.guarnicion1){ summary += ' (' + dayData.guarnicion1 + ', ' + dayData.guarnicion2 + ')'; } summary += ' - $' + dayData.precio + '</p>'; } });
   document.getElementById('orderSummary').innerHTML = summary;
-  
-  var modal = document.getElementById('successModal');
-  console.log('Modal element:', modal);
-  
-  modal.className = 'modal-overlay show';
-  console.log('✅ Clase aplicada:', modal.className);
-  console.log('✅ Modal debería estar visible ahora');
+  document.getElementById('successModal').className = 'modal-overlay show';
 }
 
 function closeSuccessModal(){
-  var modal = document.getElementById('successModal');
-  modal.className = 'modal-overlay';
+  document.getElementById('successModal').className = 'modal-overlay';
 }
 
 function sendOrderToSheets(orderData){
-  console.log('📤 Enviando a Google Sheets:', orderData);
-  
-  // Crear una promesa que SIEMPRE se resuelve después de 1 segundo
   return new Promise(function(resolve) {
     fetch(GOOGLE_SCRIPT_URL, {
       method: 'POST',
       mode: 'no-cors',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(orderData)
-    }).then(function(){
-      console.log('✅ Fetch completado');
-      setTimeout(function(){ resolve(true); }, 1000);
-    }).catch(function(error){
-      console.log('⚠️ Error en fetch (aún así se guardó):', error);
-      setTimeout(function(){ resolve(true); }, 1000);
-    });
+    }).then(function(){ setTimeout(function(){ resolve(true); }, 1000); }).catch(function(){ setTimeout(function(){ resolve(true); }, 1000); });
   });
 }
 
 document.addEventListener('DOMContentLoaded', function(){
-  console.log('✅ Market Fresh ULINE - Sistema cargado');
-  
-  // Generar menús dinámicos
   generarMenusDias();
-  
-  // Manejar selector de horario
   document.getElementById('pickupTime').addEventListener('change', function(){
     var customTimeGroup = document.getElementById('customTimeGroup');
     var customTimeInput = document.getElementById('customTime');
-    
-    if(this.value === 'Otro'){
-      customTimeGroup.style.display = 'block';
-      customTimeInput.required = true;
-    } else {
-      customTimeGroup.style.display = 'none';
-      customTimeInput.required = false;
-      customTimeInput.value = '';
-    }
+    if(this.value === 'Otro'){ customTimeGroup.style.display = 'block'; customTimeInput.required = true; } else { customTimeGroup.style.display = 'none'; customTimeInput.required = false; customTimeInput.value = ''; }
   });
   
   document.getElementById('orderForm').addEventListener('submit', function(e){
     e.preventDefault();
-    
     var submitBtn = document.getElementById('submitBtn');
     var loadingMsg = document.getElementById('loadingMsg');
-    
-    // Validaciones
     var nombre = document.getElementById('employeeName').value.trim();
     var ubicacion = document.getElementById('pickupLocation').value;
     var horario = document.getElementById('pickupTime').value;
     var horarioCustom = document.getElementById('customTime').value.trim();
-    
-    if (!nombre) {
-      alert('⚠️ Ingresa tu nombre');
-      return;
-    }
-    
-    if (!ubicacion) {
-      alert('⚠️ Selecciona dónde recogerás tu pedido');
-      return;
-    }
-    
-    if (!horario) {
-      alert('⚠️ Selecciona un horario de recogida');
-      return;
-    }
-    
-    if (horario === 'Otro' && !horarioCustom) {
-      alert('⚠️ Especifica el horario personalizado');
-      return;
-    }
-    
-    // Determinar horario final
+    if (!nombre || !ubicacion || !horario) { alert('⚠️ Completa todos los campos requeridos'); return; }
+    if (horario === 'Otro' && !horarioCustom) { alert('⚠️ Especifica el horario personalizado'); return; }
     var horarioFinal = horario === 'Otro' ? horarioCustom : horario;
-    
-    // Validar que al menos un día tenga pedido
     var alMenosUnDia = false;
-    days.forEach(function(day){
-      var tipo = document.getElementById('tipo-' + day).value;
-      if (tipo && tipo !== 'ninguno') {
-        alMenosUnDia = true;
-      }
-    });
-    
-    if (!alMenosUnDia) {
-      alert('⚠️ Debes seleccionar al menos un platillo para un día');
-      return;
-    }
-    
-    // Validar guarniciones si eligió proteína
+    days.forEach(function(day){ if (document.getElementById('tipo-' + day).value && document.getElementById('tipo-' + day).value !== 'ninguno') { alMenosUnDia = true; } });
+    if (!alMenosUnDia) { alert('⚠️ Debes seleccionar al menos un platillo para un día'); return; }
     var errorGuarniciones = false;
     var errorMsg = '';
-    days.forEach(function(day){
-      var tipo = document.getElementById('tipo-' + day).value;
-      if (tipo === 'proteina') {
-        var proteina = document.getElementById('proteina-' + day).value;
-        var guar1 = document.getElementById('guar1-' + day).value;
-        var guar2 = document.getElementById('guar2-' + day).value;
-        if (proteina && (!guar1 || !guar2)) {
-          errorGuarniciones = true;
-          errorMsg = 'Debes seleccionar 2 guarniciones para ' + dayNames[day];
-        }
-      }
-    });
-    
-    if (errorGuarniciones) {
-      alert('⚠️ ' + errorMsg);
-      return;
-    }
-    
+    days.forEach(function(day){ var tipo = document.getElementById('tipo-' + day).value; if (tipo === 'proteina') { var proteina = document.getElementById('proteina-' + day).value; var guar1 = document.getElementById('guar1-' + day).value; var guar2 = document.getElementById('guar2-' + day).value; if (proteina && (!guar1 || !guar2)) { errorGuarniciones = true; errorMsg = 'Debes seleccionar 2 guarniciones para ' + dayNames[day]; } } });
+    if (errorGuarniciones) { alert('⚠️ ' + errorMsg); return; }
     submitBtn.disabled = true;
     submitBtn.textContent = '⏳ Enviando...';
     loadingMsg.style.display = 'block';
-    
-    // Obtener fecha y hora actual
     var ahora = new Date();
-    var fechaHora = ahora.toLocaleString('es-MX', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: false
-    });
-    
+    var fechaHora = ahora.toLocaleString('es-MX', {year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false});
     var total = 0;
-    var orderData = {
-      nombre: nombre,
-      turnoNocturno: document.getElementById('nightShift').checked,
-      ubicacion: ubicacion,
-      horario: horarioFinal,
-      fechaHora: fechaHora
-    };
-    
-    days.forEach(function(day){
-      var dayOrder = getDayOrder(day);
-      orderData[day] = dayOrder;
-      total += dayOrder.precio;
-    });
-    
+    var orderData = {nombre: nombre, turnoNocturno: document.getElementById('nightShift').checked, ubicacion: ubicacion, horario: horarioFinal, fechaHora: fechaHora};
+    days.forEach(function(day){ var dayOrder = getDayOrder(day); orderData[day] = dayOrder; total += dayOrder.precio; });
     orderData.total = total;
-    
-    console.log('💾 Datos del pedido:', orderData);
-    
-    sendOrderToSheets(orderData).then(function(success){
-      console.log('📨 Respuesta del servidor recibida');
-      
+    sendOrderToSheets(orderData).then(function(){
       submitBtn.disabled = false;
       submitBtn.textContent = '✅ ENVIAR MI PEDIDO SEMANAL';
       loadingMsg.style.display = 'none';
-      
-      console.log('🎉 Mostrando modal...');
       showSuccessModal(orderData);
-      
-      // Esperar a que el modal se muestre antes de resetear
-      setTimeout(function(){
-        // Resetear formulario
-        document.getElementById('orderForm').reset();
-        days.forEach(function(day){
-          document.getElementById('price-' + day).textContent = '$0';
-          document.getElementById('proteina-container-' + day).style.display = 'none';
-          document.getElementById('ensalada-container-' + day).style.display = 'none';
-          document.getElementById('especial-container-' + day).style.display = 'none';
-        });
-        updateTotal();
-      }, 500);
-      
+      setTimeout(function(){ document.getElementById('orderForm').reset(); days.forEach(function(day){ document.getElementById('price-' + day).textContent = '$0'; document.getElementById('proteina-container-' + day).style.display = 'none'; document.getElementById('ensalada-container-' + day).style.display = 'none'; document.getElementById('especial-container-' + day).style.display = 'none'; }); updateTotal(); }, 500);
       window.scrollTo({top: 0, behavior: 'smooth'});
     });
   });
   
-  document.getElementById('successModal').addEventListener('click', function(e){
-    if(e.target === this) closeSuccessModal();
-  });
+  document.getElementById('successModal').addEventListener('click', function(e){ if(e.target === this) closeSuccessModal(); });
 });
 </script>
 </body>
