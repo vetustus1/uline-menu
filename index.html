@@ -93,6 +93,21 @@ body{margin:0;padding:0;font-family:Arial,sans-serif;background:linear-gradient(
 </div>
 </div>
 <div class="input-group">
+<label for="employeeDepartment">Departamento *</label>
+<select id="employeeDepartment" required>
+<option value="">Selecciona tu departamento...</option>
+<option value="Servicio a Clientes">🎧 Servicio a Clientes</option>
+<option value="Almacén">📦 Almacén</option>
+<option value="Finanzas">💰 Finanzas</option>
+<option value="RH">👥 RH</option>
+<option value="Oficinas">🏢 Oficinas</option>
+<option value="Ventas">📊 Ventas</option>
+<option value="Facilities">🔧 Facilities</option>
+<option value="MAC">💻 MAC</option>
+<option value="Quotes">📝 Quotes</option>
+</select>
+</div>
+<div class="input-group">
 <label for="pickupLocation">¿Dónde recogerás tu pedido? *</label>
 <select id="pickupLocation" required>
 <option value="">Selecciona una ubicación...</option>
@@ -351,7 +366,7 @@ function getDayOrder(day) {
 function showSuccessModal(orderData){
   var summary = '<p><strong>Nombre:</strong> ' + orderData.nombre;
   if (orderData.turnoNocturno) { summary += ' <span class="night-badge">🌙 Nocturno</span>'; }
-  summary += '</p><p><strong>Ubicación:</strong> ' + orderData.ubicacion + '</p><p><strong>Horario de Recogida:</strong> ⏰ ' + orderData.horario + '</p><p><strong>Fecha y Hora:</strong> ' + orderData.fechaHora + '</p><p><strong>Total:</strong> $' + orderData.total + '</p><hr>';
+  summary += '</p><p><strong>Departamento:</strong> ' + orderData.departamento + '</p><p><strong>Ubicación:</strong> ' + orderData.ubicacion + '</p><p><strong>Horario de Recogida:</strong> ⏰ ' + orderData.horario + '</p><p><strong>Fecha y Hora:</strong> ' + orderData.fechaHora + '</p><p><strong>Total:</strong> $' + orderData.total + '</p><hr>';
   days.forEach(function(day){ var dayData = orderData[day]; if(dayData && dayData.nombre && dayData.nombre !== 'Sin pedido'){ summary += '<p><strong>' + dayNames[day] + ':</strong> ' + dayData.nombre; if(dayData.guarnicion1){ summary += ' (' + dayData.guarnicion1 + ', ' + dayData.guarnicion2 + ')'; } summary += ' - $' + dayData.precio + '</p>'; } });
   document.getElementById('orderSummary').innerHTML = summary;
   document.getElementById('successModal').className = 'modal-overlay show';
@@ -385,10 +400,11 @@ document.addEventListener('DOMContentLoaded', function(){
     var submitBtn = document.getElementById('submitBtn');
     var loadingMsg = document.getElementById('loadingMsg');
     var nombre = document.getElementById('employeeName').value.trim();
+    var departamento = document.getElementById('employeeDepartment').value;
     var ubicacion = document.getElementById('pickupLocation').value;
     var horario = document.getElementById('pickupTime').value;
     var horarioCustom = document.getElementById('customTime').value.trim();
-    if (!nombre || !ubicacion || !horario) { alert('⚠️ Completa todos los campos requeridos'); return; }
+    if (!nombre || !departamento || !ubicacion || !horario) { alert('⚠️ Completa todos los campos requeridos'); return; }
     if (horario === 'Otro' && !horarioCustom) { alert('⚠️ Especifica el horario personalizado'); return; }
     var horarioFinal = horario === 'Otro' ? horarioCustom : horario;
     var alMenosUnDia = false;
@@ -404,7 +420,7 @@ document.addEventListener('DOMContentLoaded', function(){
     var ahora = new Date();
     var fechaHora = ahora.toLocaleString('es-MX', {year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false});
     var total = 0;
-    var orderData = {nombre: nombre, turnoNocturno: document.getElementById('nightShift').checked, ubicacion: ubicacion, horario: horarioFinal, fechaHora: fechaHora};
+    var orderData = {nombre: nombre, departamento: departamento, turnoNocturno: document.getElementById('nightShift').checked, ubicacion: ubicacion, horario: horarioFinal, fechaHora: fechaHora};
     days.forEach(function(day){ var dayOrder = getDayOrder(day); orderData[day] = dayOrder; total += dayOrder.precio; });
     orderData.total = total;
     sendOrderToSheets(orderData).then(function(){
