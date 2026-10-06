@@ -165,8 +165,12 @@ var menuSemanal = {
       {"nombre": "Chile relleno de queso", "precio": 95}
     ],
     "guarniciones": ["Arroz", "Frijoles", "Puré papa", "Espaguetti Poblano", "Papitas Galeana Lemon Pepper", "Verduras al vapor"],
+    "ensaladas": [
+      {"nombre": "Ensalada de lechugas mixtas con pollo", "precio": 99},
+      {"nombre": "Ensalada Búfalo con Pollo", "precio": 109}
+    ],
     "especiales": [
-      {"nombre": "Pasta Alfredo con Pollo, Verduras al vapor y Pan", "precio": 119},
+      {"nombre": "Pechuga Rellena de Jamón y Queso con Verduras y Pan", "precio": 119},
       {"nombre": "Panela en Salsa", "precio": 93}
     ]
   },
@@ -183,8 +187,12 @@ var menuSemanal = {
       {"nombre": "Chile relleno de queso", "precio": 95}
     ],
     "guarniciones": ["Arroz", "Frijoles", "Puré papa", "Espaguetti Poblano", "Verduras al vapor"],
+    "ensaladas": [
+      {"nombre": "Ensalada de lechugas mixtas con pollo", "precio": 99},
+      {"nombre": "Ensalada Búfalo con Pollo", "precio": 109}
+    ],
     "especiales": [
-      {"nombre": "Lasagna", "precio": 119}
+      {"nombre": "Panini de pechuga de pollo con papas", "precio": 109}
     ]
   },
   "miercoles": {
@@ -196,10 +204,14 @@ var menuSemanal = {
       {"nombre": "Picadillo", "precio": 95},
       {"nombre": "Chile relleno de carne", "precio": 95},
       {"nombre": "Albondigas al chipotle", "precio": 95},
-      {"nombre": "Cortadillo de Puerco en Salsa Verde con Calabacita y Elote", "precio": 95},
+      {"nombre": "Cerdo en Salsa Morita", "precio": 95},
       {"nombre": "Chile relleno de queso", "precio": 95}
     ],
     "guarniciones": ["Arroz", "Frijoles", "Puré papa", "Espaguetti Poblano", "Verduras al vapor"],
+    "ensaladas": [
+      {"nombre": "Ensalada de lechugas mixtas con pollo", "precio": 99},
+      {"nombre": "Ensalada Búfalo con Pollo", "precio": 109}
+    ],
     "especiales": [
       {"nombre": "Milanesa de Res a la Mexicana con arroz y puré", "precio": 98},
       {"nombre": "Pasta fria con panela", "precio": 84}
@@ -217,6 +229,10 @@ var menuSemanal = {
       {"nombre": "Chile relleno de queso", "precio": 95}
     ],
     "guarniciones": ["Arroz", "Frijoles", "Puré papa", "Espaguetti Poblano", "Verduras al vapor"],
+    "ensaladas": [
+      {"nombre": "Ensalada de lechugas mixtas con pollo", "precio": 99},
+      {"nombre": "Ensalada Búfalo con Pollo", "precio": 109}
+    ],
     "especiales": [
       {"nombre": "Rajas con crema y elote", "precio": 93},
       {"nombre": "Club Sandwich con Pollo, Jamón, Queso y papas fritas", "precio": 100}
@@ -234,6 +250,10 @@ var menuSemanal = {
       {"nombre": "Chile relleno de queso", "precio": 95}
     ],
     "guarniciones": ["Arroz", "Frijoles", "Puré papa", "Espaguetti Poblano", "Calabazas", "Rajas Poblanas", "Verduras al vapor"],
+    "ensaladas": [
+      {"nombre": "Ensalada de lechugas mixtas con pollo", "precio": 99},
+      {"nombre": "Ensalada Búfalo con Pollo", "precio": 109}
+    ],
     "especiales": [
       {"nombre": "Hamburguesa de Res con papas", "precio": 109}
     ]
@@ -252,7 +272,7 @@ function generarMenusDias() {
     daySection.className = 'day-section';
     daySection.id = 'day-' + day;
     var html = '<h3>🗓️ ' + dayNames[day].toUpperCase() + ' <span class="day-price" id="price-' + day + '">$0</span></h3>';
-    html += '<div class="selection-group"><label>Selecciona tipo de platillo:</label><select name="' + day + '-tipo" id="tipo-' + day + '" required onchange="cambiarTipoPlatillo(\'' + day + '\')"><option value="">Selecciona...</option><option value="ninguno">❌ Ninguno (no quiero este día)</option><option value="proteina">🍖 Menú del Día (Proteína + 2 Guarniciones)</option><option value="especial">⭐ Platillo Especial</option></select></div>';
+    html += '<div class="selection-group"><label>Selecciona tipo de platillo:</label><select name="' + day + '-tipo" id="tipo-' + day + '" required onchange="cambiarTipoPlatillo(\'' + day + '\')"><option value="">Selecciona...</option><option value="ninguno">❌ Ninguno (no quiero este día)</option><option value="proteina">🍖 Menú del Día (Proteína + 2 Guarniciones)</option><option value="ensalada">🥗 Ensalada</option><option value="especial">⭐ Platillo Especial</option></select></div>';
     html += '<div id="proteina-container-' + day + '" style="display:none"><div class="selection-group"><label>Proteína:</label><select name="' + day + '-proteina" id="proteina-' + day + '" onchange="updateDayPrice(\'' + day + '\')"><option value="">Selecciona proteína...</option>';
     menu.proteinas.forEach(function(p) { html += '<option value="' + p.nombre + '|' + p.precio + '">' + p.nombre + ' - $' + p.precio + '</option>'; });
     html += '</select><div class="garnish-note">✅ Incluye 2 guarniciones de tu elección</div></div><div class="garnish-container"><div class="selection-group"><label>Guarnición 1:</label><select name="' + day + '-guar1" id="guar1-' + day + '"><option value="">Selecciona...</option>';
@@ -260,6 +280,9 @@ function generarMenusDias() {
     html += '</select></div><div class="selection-group"><label>Guarnición 2:</label><select name="' + day + '-guar2" id="guar2-' + day + '"><option value="">Selecciona...</option>';
     menu.guarniciones.forEach(function(g) { html += '<option value="' + g + '">' + g + '</option>'; });
     html += '</select></div></div></div>';
+    html += '<div id="ensalada-container-' + day + '" style="display:none"><div class="selection-group"><label>Ensalada:</label><select name="' + day + '-ensalada" id="ensalada-' + day + '" onchange="updateDayPrice(\'' + day + '\')"><option value="">Selecciona ensalada...</option>';
+    menu.ensaladas.forEach(function(e) { html += '<option value="' + e.nombre + '|' + e.precio + '">' + e.nombre + ' - $' + e.precio + '</option>'; });
+    html += '</select></div></div>';
     html += '<div id="especial-container-' + day + '" style="display:none"><div class="selection-group"><label>Platillo Especial:</label><select name="' + day + '-especial" id="especial-' + day + '" onchange="updateDayPrice(\'' + day + '\')"><option value="">Selecciona platillo...</option>';
     menu.especiales.forEach(function(e) { html += '<option value="' + e.nombre + '|' + e.precio + '">' + e.nombre + ' - $' + e.precio + '</option>'; });
     html += '</select></div></div>';
@@ -271,12 +294,15 @@ function generarMenusDias() {
 function cambiarTipoPlatillo(day) {
   var tipo = document.getElementById('tipo-' + day).value;
   document.getElementById('proteina-container-' + day).style.display = 'none';
+  document.getElementById('ensalada-container-' + day).style.display = 'none';
   document.getElementById('especial-container-' + day).style.display = 'none';
   document.getElementById('proteina-' + day).value = '';
+  document.getElementById('ensalada-' + day).value = '';
   document.getElementById('especial-' + day).value = '';
   document.getElementById('guar1-' + day).value = '';
   document.getElementById('guar2-' + day).value = '';
   if (tipo === 'proteina') { document.getElementById('proteina-container-' + day).style.display = 'block'; }
+  else if (tipo === 'ensalada') { document.getElementById('ensalada-container-' + day).style.display = 'block'; }
   else if (tipo === 'especial') { document.getElementById('especial-container-' + day).style.display = 'block'; }
   updateDayPrice(day);
 }
@@ -287,6 +313,9 @@ function updateDayPrice(day) {
   if (tipo === 'proteina') {
     var proteinaVal = document.getElementById('proteina-' + day).value;
     if (proteinaVal) { precio = parseInt(proteinaVal.split('|')[1]) || 0; }
+  } else if (tipo === 'ensalada') {
+    var ensaladaVal = document.getElementById('ensalada-' + day).value;
+    if (ensaladaVal) { precio = parseInt(ensaladaVal.split('|')[1]) || 0; }
   } else if (tipo === 'especial') {
     var especialVal = document.getElementById('especial-' + day).value;
     if (especialVal) { precio = parseInt(especialVal.split('|')[1]) || 0; }
@@ -313,6 +342,12 @@ function getDayOrder(day) {
     if (!proteinaVal) { return {tipo: 'ninguno', nombre: 'Sin pedido', precio: 0, guarnicion1: '', guarnicion2: ''}; }
     var parts = proteinaVal.split('|');
     return {tipo: 'proteina', nombre: parts[0], precio: parseInt(parts[1]), guarnicion1: document.getElementById('guar1-' + day).value || '', guarnicion2: document.getElementById('guar2-' + day).value || ''};
+  }
+  if (tipo === 'ensalada') {
+    var ensaladaVal = document.getElementById('ensalada-' + day).value;
+    if (!ensaladaVal) { return {tipo: 'ninguno', nombre: 'Sin pedido', precio: 0, guarnicion1: '', guarnicion2: ''}; }
+    var parts = ensaladaVal.split('|');
+    return {tipo: 'ensalada', nombre: parts[0], precio: parseInt(parts[1]), guarnicion1: '', guarnicion2: ''};
   }
   if (tipo === 'especial') {
     var especialVal = document.getElementById('especial-' + day).value;
